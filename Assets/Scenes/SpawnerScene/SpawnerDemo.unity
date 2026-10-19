@@ -171,6 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraAreaSpawner
   prefabs:
   - {fileID: 5581655270960266527, guid: 6bced6a57a5802742876dc92746933b7, type: 3}
+  - {fileID: 7557939269951661689, guid: bb558285fb2d65340b6aa9a3c2ccc53d, type: 3}
   piecesPerAppearance: 3
   spawnerVisual: {fileID: 6298766776879118538, guid: e563c91b319f11041a4833bc4a2c41bd, type: 3}
   autoSpawn: 1
