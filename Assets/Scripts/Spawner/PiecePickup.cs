@@ -16,8 +16,15 @@ public class PiecePickup : MonoBehaviour
 
     [SerializeField] private string collectorTag = "Player";
     [SerializeField] private UnityEvent onCollected;
+    [Tooltip("Same event, but it also gives the piece id (0, 1, 2...), set by the spawner. -1 if the piece was placed by hand.")]
+    [SerializeField] private UnityEvent<int> onCollectedWithId;
 
     private bool taken;
+
+    /// <summary>Piece type, assigned by the spawner when it drops the piece (-1 if placed by hand).</summary>
+    public int Id { get; private set; } = -1;
+
+    public void SetId(int id) => Id = id;
 
     private void Reset() => GetComponent<Collider>().isTrigger = true;
 
@@ -27,6 +34,7 @@ public class PiecePickup : MonoBehaviour
 
         taken = true;
         onCollected?.Invoke();
+        onCollectedWithId?.Invoke(Id);
         Collected?.Invoke(this);
 
         if (TryGetComponent(out PieceLifecycle lifecycle)) lifecycle.Dismiss();

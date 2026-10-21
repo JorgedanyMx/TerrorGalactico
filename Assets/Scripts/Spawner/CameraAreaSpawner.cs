@@ -13,7 +13,7 @@ using UnityEngine.Serialization;
 public class CameraAreaSpawner : MonoBehaviour
 {
     [Header("What to spawn")]
-    [Tooltip("Pieces the player has to collect. One is picked at random for each drop.")]
+    [Tooltip("One prefab per piece type. The list position is the id: Element 0 = id 0, Element 1 = id 1, Element 2 = id 2... Each drop rolls a random id from 0 (included) to the list size (excluded) and spawns that prefab.")]
     [SerializeField] private GameObject[] prefabs;
     [SerializeField] private int piecesPerAppearance = 3;
     [Tooltip("Optional. The thing that appears in the area, drops the pieces and then disappears.")]
@@ -148,7 +148,16 @@ public class CameraAreaSpawner : MonoBehaviour
         {
             if (!TryGetPointAround(area, center, out Vector3 point)) continue;
 
-            GameObject piece = Instantiate(prefabs[Random.Range(0, prefabs.Length)], point, Quaternion.identity);
+            int id = Random.Range(0, prefabs.Length);
+            GameObject prefab = prefabs[id];
+            if (prefab == null)
+            {
+                Debug.LogWarning($"{nameof(CameraAreaSpawner)}: no prefab assigned for piece id {id} (Element {id}).", this);
+                continue;
+            }
+
+            GameObject piece = Instantiate(prefab, point, Quaternion.identity);
+            if (piece.TryGetComponent(out PiecePickup pickup)) pickup.SetId(id);
             piece.AddComponent<PieceLifecycle>().Begin(pieceLifetime, pieceScaleTime, pieceScaleTime);
         }
     }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3835125426573232197}
   - component: {fileID: 949369842120126540}
   m_Layer: 0
-  m_Name: Collectibles
+  m_Name: CollectiblesVariantA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 20814f0d0bcab144f955f5ca33dabb58, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -141,3 +141,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onCollectedWithId:
+    m_PersistentCalls:
+      m_Calls: []
