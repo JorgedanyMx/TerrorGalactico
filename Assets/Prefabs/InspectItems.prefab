@@ -441,8 +441,8 @@ MonoBehaviour:
   spawnDistance: 1
   ActivableElements: {fileID: 5610533327534379383}
   rotationSpeed: 0.5
-  inspectAction: {fileID: 3493201250044285650, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-  exitAction: {fileID: -5929819870811288840, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  inspectAction: {fileID: 6516050151790119918, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  exitAction: {fileID: -8331650763076737402, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   postProcessVolume: {fileID: 4913889416535256729}
   blurTransitionTime: 0.5
   textName: {fileID: 3524959707162444652}
