@@ -26,6 +26,9 @@ public sealed class GraveSpawner : MonoBehaviour
     [SerializeField] private LayerMask obstacleLayers;
     [SerializeField, Min(0.1f)] private float graveHeight = 1.65f;
 
+    [Tooltip("Keep both central paths clear; zero disables the reserved cross.")]
+    [SerializeField, Min(0f)] private float reservedCrossHalfWidth;
+
     [Header("Temporary spawn test")]
     [Tooltip("Press Space in the Game view to spawn graves without real enemies.")]
     [SerializeField] private bool enableSpaceTest = true;
@@ -109,6 +112,11 @@ public sealed class GraveSpawner : MonoBehaviour
 
     private bool IsPositionFree(Vector3 position)
     {
+        Vector3 local = position - transform.position;
+        if (reservedCrossHalfWidth > 0f &&
+            (Mathf.Abs(local.x) < reservedCrossHalfWidth + graveSize * .5f ||
+             Mathf.Abs(local.z) < reservedCrossHalfWidth + graveSize * .5f)) return false;
+
         float separation = graveSize + spacing;
         foreach (var grave in pool.ActiveGraves)
         {
@@ -168,6 +176,7 @@ public sealed class GraveSpawner : MonoBehaviour
 
     private void OnValidate()
     {
+        reservedCrossHalfWidth = Mathf.Max(0f, reservedCrossHalfWidth);
         areaSize = Mathf.Max(1f, areaSize);
         graveSize = Mathf.Max(0.1f, graveSize);
         spacing = Mathf.Max(0f, spacing);
