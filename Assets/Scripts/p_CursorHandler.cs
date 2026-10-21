@@ -1,78 +1,59 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class cursorHandler : MonoBehaviour
+public class p_CursorHandler : MonoBehaviour
 {
-    public static event System.Action<int> OnPlayerShoot;
     public float cursorDistance = 1f;
+
     [SerializeField] private Transform cursorObject;
-    // [SerializeField] private ShootLogic shootLogic;
+    [SerializeField] private p_ShootLogic shootLogic;
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject bulletPrefab;
-    public InputAction cursorAction;
-    public InputAction cursorClickAction;
 
-    // Player stats that will be carried from the Stats script
-    private int bulletBounce;
-    private float damage;
-
+    private p_PlayerStats stats;
+    private InputAction cursorAction;
+    private InputAction cursorClickAction;
 
     void OnEnable()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        cursorAction = InputSystem.actions.FindAction("CursorMove");
+
+        stats = player.GetComponent<p_PlayerStats>();
+
+        cursorAction = InputSystem.actions.FindAction("Cursor");
         cursorAction.Enable();
         cursorAction.performed += OnCursorMove;
-        cursorClickAction = InputSystem.actions.FindAction("CursorClick");
+
+        cursorClickAction = InputSystem.actions.FindAction("Shoot");
         cursorClickAction.Enable();
         cursorClickAction.started += OnCursorClick;
-        CheckStats();   
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
+        cursorAction.performed -= OnCursorMove;
+        cursorClickAction.started -= OnCursorClick;
         cursorAction.Disable();
         cursorClickAction.Disable();
     }
 
-    private void OnDestroy()
+    void OnCursorMove(InputAction.CallbackContext context)
     {
-        cursorAction.performed -= OnCursorMove;
-        cursorClickAction.started -= OnCursorClick;
+        Vector2 delta = context.ReadValue<Vector2>() * Time.deltaTime;
+        cursorObject.localPosition =
+            (cursorObject.localPosition + new Vector3(delta.x, 0, delta.y)).normalized * cursorDistance;
     }
 
-    private void CheckStats()
+    void OnCursorClick(InputAction.CallbackContext context)
     {
-        // bulletBounce = player.GetComponent<p_PlayerStats>().bulletBounce;
-        // damage = player.GetComponent<p_PlayerStats>().PlayerDamage;
+        if (stats.CurrentBullets <= 0)
+            return;
+
+        Vector3 direction = new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.y).normalized;
+
+        shootLogic.Shoot(player.transform.position, player.transform.position + direction,
+                         stats.PlayerDamage, bulletPrefab, player, stats.bulletBounce);
+        stats.CurrentBullets--;
     }
-
-    private void OnCursorMove(InputAction.CallbackContext context)
-    {
-        // Vector2 cursorInput = context.ReadValue<Vector2>();
-        // cursorInput = cursorInput.normalized * cursorDistance;
-        // cursorObject.localPosition = Vector3.Lerp(cursorObject.localPosition, new Vector3(cursorInput.x, cursorInput.y, 0), smoothSpeed);
-        Vector2 cursorInput = context.ReadValue<Vector2>();
-        Vector2 adjustedInput = cursorInput * Time.deltaTime;
-        cursorObject.localPosition = (cursorObject.localPosition + new Vector3(adjustedInput.x, adjustedInput.y, 0)).normalized * cursorDistance;
-    }
-
-    private void OnCursorClick(InputAction.CallbackContext context)
-    {
-        Vector3 targetPosition = new Vector3(cursorObject.transform.localPosition.x, 0, cursorObject.transform.localPosition.y).normalized;
-        // if (player.GetComponent<p_PlayerStats>().CurrentBullets > 0)
-        // {
-            // OnPlayerShoot?.Invoke(player.GetComponent<p_PlayerStats>().CurrentBullets);
-            // player.GetComponent<p_PlayerStats>().CurrentBullets--;
-            // shootLogic.Shoot(player.transform.position, player.transform.position + targetPosition, damage, bulletPrefab, player, bulletBounce);
-        // }
-        // else
-        // {
-        //     Debug.Log("Out of bullets!");
-        // }
-    }
-
-
 }
