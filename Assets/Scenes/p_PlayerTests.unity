@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 155919645}
   - component: {fileID: 155919646}
   - component: {fileID: 155919647}
+  - component: {fileID: 155919648}
   m_Layer: 0
   m_Name: temp_player
   m_TagString: Untagged
@@ -299,6 +300,23 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.41122842, y: 0.38784385, z: 0.41732955}
   m_Center: {x: 0.048704535, y: -0.9795412, z: 0.015473366}
+--- !u!114 &155919648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 155919640}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45bf3b8ff12ff97428651b65585b59c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_PlayerStats
+  maxHealth: 100
+  PlayerDamage: 10
+  bulletBounce: 2
+  maxBullets: 5
+  reloadTime: 4
 --- !u!1 &159186315
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,6 +430,70 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &370779400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 370779403}
+  - component: {fileID: 370779402}
+  - component: {fileID: 370779401}
+  m_Layer: 0
+  m_Name: ShootHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &370779401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370779400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57a2301d7dc13cc4fb0f9829a404748f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_ShootLogic
+  bulletSpeed: 15
+  bulletLifetime: 4
+--- !u!114 &370779402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370779400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 525b741f1d4f9fe478503854d2b09b84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_CursorHandler
+  cursorDistance: 1
+  cursorObject: {fileID: 1330798993}
+  shootLogic: {fileID: 370779401}
+  player: {fileID: 155919640}
+  bulletPrefab: {fileID: 6754912272156815745, guid: f0dcb643b450a4f4c9444b871bef234b, type: 3}
+--- !u!4 &370779403
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370779400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.40178, y: 1.40318, z: 0.29157}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &871819843
 GameObject:
   m_ObjectHideFlags: 0
@@ -441,7 +523,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3636, y: 0.3636, z: 0.3636}
+  m_LocalScale: {x: 0.65927947, y: 0.65927947, z: 0.65927947}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1330798993}
@@ -464,7 +546,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -682,7 +764,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.88829124, y: 0.88829124, z: 0.88829124}
+  m_LocalScale: {x: 0.41720375, y: 0.41720375, z: 0.41720375}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 871819844}
@@ -704,7 +786,7 @@ MeshCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 5
   m_Convex: 0
   m_CookingOptions: 30
@@ -910,3 +992,4 @@ SceneRoots:
   - {fileID: 918009889}
   - {fileID: 159186319}
   - {fileID: 155919644}
+  - {fileID: 370779403}
