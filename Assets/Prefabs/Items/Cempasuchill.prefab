@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 123580574659032936}
   - component: {fileID: 2880561245766058313}
   - component: {fileID: 6266054465758333207}
+  - component: {fileID: 5521954633993932445}
   m_Layer: 0
   m_Name: Cempasuchill
-  m_TagString: Untagged
+  m_TagString: Ofrenda
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,7 +50,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -69,6 +70,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RotateItem
   velocidad: 30
   EnableRotation: 1
+--- !u!114 &5521954633993932445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3978275864066066377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7f02697b720b2444abf054035cce7fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PiecePickup
+  collectorTag: Player
+  onCollected:
+    m_PersistentCalls:
+      m_Calls: []
+  onCollectedWithId:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1001 &7441441599293405654
 PrefabInstance:
   m_ObjectHideFlags: 0
