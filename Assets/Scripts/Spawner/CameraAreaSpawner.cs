@@ -1,11 +1,13 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
-/// Cycle: wait a random time -> the spawner appears at a random point of what the camera sees,
-/// drops the pieces inside that area -> stays a few seconds -> disappears -> repeat.
-/// Works with orthographic (isometric) and perspective cameras: random viewport points are
-/// projected onto a horizontal ground plane.
+/// Cycle: wait a random time -> the spawner appears at a random point of the spawn area,
+/// drops the pieces in a ring around itself -> stays a few seconds -> disappears -> repeat.
+/// The spawn area is the floor collider's footprint (XZ), optionally shrunk by an edge margin
+/// and/or limited to a custom rectangle. It does not depend on the camera.
+/// (The class keeps its old name so existing scenes and prefabs do not lose the reference.)
 /// Put it on an empty GameObject in the scene (the "appearing" thing is the optional Spawner Visual prefab).
 /// </summary>
 public class CameraAreaSpawner : MonoBehaviour
@@ -42,17 +44,18 @@ public class CameraAreaSpawner : MonoBehaviour
     [SerializeField] private float riseDepth = 2f;
     [SerializeField] private float riseTime = 0.5f;
 
-    [Header("Area (camera view)")]
-    [Tooltip("Defaults to Camera.main when empty.")]
-    [SerializeField] private Camera targetCamera;
-    [Tooltip("Margin from the screen edges, 0 = full screen, 0.5 = center point only.")]
-    [SerializeField, Range(0f, 0.45f)] private float viewportMargin = 0.1f;
-    [Tooltip("Optional. If set (e.g. the floor plane), points outside its bounds are rejected, so the spawn area is the camera view clipped to the floor.")]
-    [SerializeField] private Collider limitToCollider;
-    [Tooltip("World Y of the plane objects are dropped on.")]
-    [SerializeField] private float groundHeight = 0f;
-    [Tooltip("Extra height above the ground so the object does not clip into it.")]
-    [SerializeField] private float spawnHeightOffset = 0.5f;
+    [Header("Spawn area (floor)")]
+    [Tooltip("The floor. Its top surface sets the height and its footprint (bounds) sets the area.")]
+    [FormerlySerializedAs("limitToCollider")]
+    [SerializeField] private Collider groundCollider;
+    [Tooltip("Keeps objects this far from the edges of the area (nothing spawns right at the border).")]
+    [SerializeField, Min(0f)] private float edgeMargin = 2f;
+    [Tooltip("Limit the area to a custom rectangle instead of the whole floor. Always clipped to the floor.")]
+    [SerializeField] private bool useCustomArea = false;
+    [Tooltip("Custom rectangle center, as an offset (X, Z) from the floor's center.")]
+    [SerializeField] private Vector2 customCenterOffset = Vector2.zero;
+    [Tooltip("Custom rectangle size (X, Z).")]
+    [SerializeField] private Vector2 customSize = new Vector2(20f, 20f);
 
     [Header("Placement")]
     [Tooltip("Spawn points overlapping these layers are rejected (walls, props...).")]
@@ -62,8 +65,6 @@ public class CameraAreaSpawner : MonoBehaviour
 
     private Coroutine cycle;
     private GameObject currentVisual;
-
-    private Camera Cam => targetCamera != null ? targetCamera : (targetCamera = Camera.main);
 
     private void OnEnable()
     {
@@ -106,10 +107,9 @@ public class CameraAreaSpawner : MonoBehaviour
 
     private IEnumerator Appearance()
     {
-        if (!TryGetRandomPoint(out Vector3 spawnerPoint)) yield break;
+        if (!TryGetArea(out Rect area, out float floorY)) yield break;
+        if (!TryGetRandomPoint(area, floorY, out Vector3 standPoint)) yield break;
 
-        // The visual stands on the floor, not at the floating drop height.
-        Vector3 standPoint = spawnerPoint - Vector3.up * spawnHeightOffset;
         Vector3 hiddenPoint = standPoint - Vector3.up * riseDepth;
 
         if (spawnerVisual != null)
@@ -118,7 +118,7 @@ public class CameraAreaSpawner : MonoBehaviour
             yield return MoveTo(currentVisual.transform, hiddenPoint, standPoint, riseTime);
         }
 
-        DropPieces(spawnerPoint);
+        DropPieces(area, standPoint);
 
         yield return new WaitForSeconds(RandomIn(stayRange));
 
@@ -140,20 +140,20 @@ public class CameraAreaSpawner : MonoBehaviour
         if (target != null) target.position = to;
     }
 
-    private void DropPieces(Vector3 center)
+    private void DropPieces(Rect area, Vector3 center)
     {
         if (prefabs == null || prefabs.Length == 0) return;
 
         for (int i = 0; i < piecesPerAppearance; i++)
         {
-            if (!TryGetPointAround(center, out Vector3 point)) continue;
+            if (!TryGetPointAround(area, center, out Vector3 point)) continue;
 
             GameObject piece = Instantiate(prefabs[Random.Range(0, prefabs.Length)], point, Quaternion.identity);
             piece.AddComponent<PieceLifecycle>().Begin(pieceLifetime, pieceScaleTime, pieceScaleTime);
         }
     }
 
-    private bool TryGetPointAround(Vector3 center, out Vector3 point)
+    private bool TryGetPointAround(Rect area, Vector3 center, out Vector3 point)
     {
         point = default;
         for (int i = 0; i < Mathf.Max(1, maxPlacementAttempts); i++)
@@ -162,10 +162,10 @@ public class CameraAreaSpawner : MonoBehaviour
             float inner = Mathf.Clamp(minDropDistance, 0f, dropRadius);
             float radius = Mathf.Sqrt(Random.Range(inner * inner, dropRadius * dropRadius));
             Vector2 offset = Random.insideUnitCircle.normalized * radius;
-            Vector3 candidate = new Vector3(center.x + offset.x, groundHeight + pieceHeightOffset, center.z + offset.y);
+            Vector3 candidate = new Vector3(center.x + offset.x, center.y + pieceHeightOffset, center.z + offset.y);
 
-            if (limitToCollider != null && !IsInsideXZ(limitToCollider.bounds, candidate)) continue;
-            if (blockedLayers.value != 0 && Physics.CheckSphere(candidate, clearanceRadius, blockedLayers)) continue;
+            if (!area.Contains(new Vector2(candidate.x, candidate.z))) continue;
+            if (IsBlocked(candidate)) continue;
 
             point = candidate;
             return true;
@@ -173,71 +173,94 @@ public class CameraAreaSpawner : MonoBehaviour
         return false;
     }
 
-    private static float RandomIn(Vector2 range) => Random.Range(Mathf.Min(range.x, range.y), Mathf.Max(range.x, range.y));
-
-    private bool TryGetRandomPoint(out Vector3 point)
+    private bool TryGetRandomPoint(Rect area, float floorY, out Vector3 point)
     {
         point = default;
-        Camera cam = Cam;
-        if (cam == null)
+        for (int i = 0; i < Mathf.Max(1, maxPlacementAttempts); i++)
         {
-            Debug.LogWarning($"{nameof(CameraAreaSpawner)}: no camera found (tag one as MainCamera or assign it).", this);
+            Vector3 candidate = new Vector3(
+                Random.Range(area.xMin, area.xMax),
+                floorY,
+                Random.Range(area.yMin, area.yMax));
+
+            if (IsBlocked(candidate + Vector3.up * clearanceRadius)) continue;
+
+            point = candidate;
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsBlocked(Vector3 position)
+    {
+        return blockedLayers.value != 0 && Physics.CheckSphere(position, clearanceRadius, blockedLayers);
+    }
+
+    /// <summary>
+    /// The spawn rectangle in world XZ (Rect.x = world X, Rect.y = world Z) and the floor's top height.
+    /// </summary>
+    private bool TryGetArea(out Rect area, out float floorY, bool logWarnings = true)
+    {
+        area = default;
+        floorY = 0f;
+        if (groundCollider == null)
+        {
+            if (logWarnings) Debug.LogWarning($"{nameof(CameraAreaSpawner)}: assign the floor collider in 'Ground Collider'.", this);
             return false;
         }
 
-        var ground = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
-        for (int i = 0; i < Mathf.Max(1, maxPlacementAttempts); i++)
+        Bounds bounds = groundCollider.bounds;
+        floorY = bounds.max.y;
+
+        float xMin = bounds.min.x, xMax = bounds.max.x;
+        float zMin = bounds.min.z, zMax = bounds.max.z;
+
+        if (useCustomArea)
         {
-            Vector2 viewport = new Vector2(
-                Random.Range(viewportMargin, 1f - viewportMargin),
-                Random.Range(viewportMargin, 1f - viewportMargin));
-            Ray ray = cam.ViewportPointToRay(viewport);
-            if (!ground.Raycast(ray, out float distance)) continue;
-
-            Vector3 groundPoint = ray.GetPoint(distance);
-            if (limitToCollider != null && !IsInsideXZ(limitToCollider.bounds, groundPoint)) continue;
-
-            Vector3 candidate = groundPoint + Vector3.up * spawnHeightOffset;
-            if (blockedLayers.value != 0 && Physics.CheckSphere(candidate, clearanceRadius, blockedLayers)) continue;
-
-            point = candidate;
-            return true;
+            Vector2 center = new Vector2(bounds.center.x, bounds.center.z) + customCenterOffset;
+            Vector2 half = new Vector2(Mathf.Abs(customSize.x), Mathf.Abs(customSize.y)) * 0.5f;
+            xMin = Mathf.Max(xMin, center.x - half.x);
+            xMax = Mathf.Min(xMax, center.x + half.x);
+            zMin = Mathf.Max(zMin, center.y - half.y);
+            zMax = Mathf.Min(zMax, center.y + half.y);
         }
-        return false;
-    }
 
-    private static bool IsInsideXZ(Bounds bounds, Vector3 point)
-    {
-        return point.x >= bounds.min.x && point.x <= bounds.max.x
-            && point.z >= bounds.min.z && point.z <= bounds.max.z;
+        xMin += edgeMargin;
+        xMax -= edgeMargin;
+        zMin += edgeMargin;
+        zMax -= edgeMargin;
+
+        if (xMin >= xMax || zMin >= zMax)
+        {
+            if (logWarnings) Debug.LogWarning($"{nameof(CameraAreaSpawner)}: the spawn area is empty (edge margin or custom area too big for the floor).", this);
+            return false;
+        }
+
+        area = Rect.MinMaxRect(xMin, zMin, xMax, zMax);
+        return true;
     }
 
     private void OnDrawGizmosSelected()
     {
-        Camera cam = Cam;
-        if (cam == null) return;
+        if (groundCollider == null) return;
 
-        var ground = new Plane(Vector3.up, new Vector3(0f, groundHeight, 0f));
-        Vector2[] corners =
-        {
-            new Vector2(viewportMargin, viewportMargin),
-            new Vector2(1f - viewportMargin, viewportMargin),
-            new Vector2(1f - viewportMargin, 1f - viewportMargin),
-            new Vector2(viewportMargin, 1f - viewportMargin),
-        };
+        // Whole floor, in grey, so you can see how the area sits inside it.
+        Bounds bounds = groundCollider.bounds;
+        Gizmos.color = new Color(1f, 1f, 1f, 0.25f);
+        Gizmos.DrawWireCube(
+            new Vector3(bounds.center.x, bounds.max.y, bounds.center.z),
+            new Vector3(bounds.size.x, 0f, bounds.size.z));
 
+        if (!TryGetArea(out Rect area, out float floorY, false)) return;
+
+        Vector3 center = new Vector3(area.center.x, floorY, area.center.y);
+        Vector3 size = new Vector3(area.width, 0f, area.height);
+
+        Gizmos.color = new Color(0f, 1f, 1f, 0.15f);
+        Gizmos.DrawCube(center, new Vector3(size.x, 0.02f, size.z));
         Gizmos.color = Color.cyan;
-        Vector3? previous = null;
-        Vector3? first = null;
-        foreach (Vector2 corner in corners)
-        {
-            Ray ray = cam.ViewportPointToRay(corner);
-            if (!ground.Raycast(ray, out float distance)) return;
-            Vector3 p = ray.GetPoint(distance);
-            first ??= p;
-            if (previous.HasValue) Gizmos.DrawLine(previous.Value, p);
-            previous = p;
-        }
-        Gizmos.DrawLine(previous.Value, first.Value);
+        Gizmos.DrawWireCube(center, size);
     }
+
+    private static float RandomIn(Vector2 range) => Random.Range(Mathf.Min(range.x, range.y), Mathf.Max(range.x, range.y));
 }
