@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -33,6 +34,8 @@ public class CameraAreaSpawner : MonoBehaviour
     [SerializeField] private float dropRadius = 4f;
     [Tooltip("Pieces never land closer than this to the spawner (use about half the spawner's width). 0 = no limit.")]
     [SerializeField] private float minDropDistance = 1f;
+    [Tooltip("Pieces of the same drop never land closer than this to each other (use about the piece's width). 0 = they may overlap.")]
+    [SerializeField] private float minPieceSpacing = 1f;
     [Tooltip("Height of the piece's pivot above the floor (half its size if the pivot is centered).")]
     [SerializeField] private float pieceHeightOffset = 0.1f;
     [Tooltip("Seconds a piece stays before shrinking away if nobody collects it.")]
@@ -144,9 +147,11 @@ public class CameraAreaSpawner : MonoBehaviour
     {
         if (prefabs == null || prefabs.Length == 0) return;
 
+        var placed = new List<Vector3>(piecesPerAppearance);
         for (int i = 0; i < piecesPerAppearance; i++)
         {
-            if (!TryGetPointAround(area, center, out Vector3 point)) continue;
+            if (!TryGetPointAround(area, center, placed, out Vector3 point)) continue;
+            placed.Add(point);
 
             int id = Random.Range(0, prefabs.Length);
             GameObject prefab = prefabs[id];
@@ -162,7 +167,7 @@ public class CameraAreaSpawner : MonoBehaviour
         }
     }
 
-    private bool TryGetPointAround(Rect area, Vector3 center, out Vector3 point)
+    private bool TryGetPointAround(Rect area, Vector3 center, List<Vector3> alreadyPlaced, out Vector3 point)
     {
         point = default;
         for (int i = 0; i < Mathf.Max(1, maxPlacementAttempts); i++)
@@ -175,9 +180,24 @@ public class CameraAreaSpawner : MonoBehaviour
 
             if (!area.Contains(new Vector2(candidate.x, candidate.z))) continue;
             if (IsBlocked(candidate)) continue;
+            if (IsTooCloseToAny(candidate, alreadyPlaced)) continue;
 
             point = candidate;
             return true;
+        }
+        return false;
+    }
+
+    private bool IsTooCloseToAny(Vector3 candidate, List<Vector3> others)
+    {
+        if (minPieceSpacing <= 0f) return false;
+
+        float sqrMin = minPieceSpacing * minPieceSpacing;
+        foreach (Vector3 other in others)
+        {
+            float dx = candidate.x - other.x;
+            float dz = candidate.z - other.z;
+            if (dx * dx + dz * dz < sqrMin) return true;
         }
         return false;
     }
