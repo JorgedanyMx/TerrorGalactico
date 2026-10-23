@@ -19,10 +19,72 @@ public static class PanteonLayoutBuilder
         { EditorApplication.delayCall += ConsumeRequest; return; }
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
         File.Delete(Request);
-        try { ApplyPopulation(); }
+        try { RemoveOutsideGraves(); }
         catch (Exception e) { File.WriteAllText("Temp/PanteonLayout.result", e.ToString()); Debug.LogException(e); }
     }
 
+    [MenuItem("Tools/Panteon/Remove Graves Outside Map")]
+    public static void RemoveOutsideGraves()
+    {
+        var scene = SceneManager.GetSceneByPath(ScenePath);
+        if (!scene.isLoaded) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+        var layout = Array.Find(scene.GetRootGameObjects(), go => go.name == "Layout 150x150");
+        var zones = layout.transform.Find("Zonas 1 a 4 - tumbas permanentes");
+        EditorSceneManager.SaveScene(scene, "Temp/Panteon-before-removing-outside.unity", true);
+        int removed = 0, retained = 0;
+        foreach (Transform zone in zones)
+            for (int i = zone.childCount - 1; i >= 0; i--)
+            {
+                var tomb = zone.GetChild(i);
+                bool outside = false;
+                foreach (var renderer in tomb.GetComponentsInChildren<Renderer>(true))
+                {
+                    var bounds = renderer.bounds;
+                    if (bounds.min.x < -75f || bounds.max.x > 75f || bounds.min.z < -75f || bounds.max.z > 75f)
+                        outside = true;
+                }
+                if (outside) { UnityEngine.Object.DestroyImmediate(tomb.gameObject); removed++; }
+                else retained++;
+            }
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: removed " + removed + " graves extending outside 150x150 map; retained " + retained + "; existing spacing and other objects preserved.");
+        Debug.Log("Panteon: removed graves outside map boundary.");
+    }
+    [MenuItem("Tools/Panteon/Expand Existing Graves To 5m And 7m Gaps")]
+    public static void ExpandExistingGraves()
+    {
+        var scene = SceneManager.GetSceneByPath(ScenePath);
+        if (!scene.isLoaded) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+        var layout = Array.Find(scene.GetRootGameObjects(), go => go.name == "Layout 150x150");
+        var zones = layout.transform.Find("Zonas 1 a 4 - tumbas permanentes");
+        EditorSceneManager.SaveScene(scene, "Temp/Panteon-before-expanded-spacing.unity", true);
+        int count = 0;
+        foreach (Transform zone in zones)
+        {
+            if (zone.name == "Zona 1.B") continue;
+            if (!zone.name.StartsWith("Zona ") || !zone.name.EndsWith(" - densidad gradual")) continue;
+            foreach (Transform tomb in zone)
+            {
+                var parts = tomb.name.Split(' ');
+                var indices = parts[parts.Length - 1].Split('-');
+                if (indices.Length != 2 || !int.TryParse(indices[0], out int row) || !int.TryParse(indices[1], out int column))
+                    throw new InvalidOperationException("Cannot identify grave grid position: " + tomb.name);
+                row--; column--;
+                var position = tomb.position;
+                position.x = Mathf.Sign(position.x) * (9.5f + column * 7f + (row % 2) * .3f);
+                position.z = Mathf.Sign(position.z) * (10f + row * 9f);
+                tomb.position = position;
+                count++;
+            }
+        }
+        Physics.SyncTransforms();
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Capture(scene, new Vector3(0,190,0), Quaternion.Euler(90,0,0), "Temp/Panteon-expanded-spacing.png", 115);
+        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: repositioned all " + count + " existing graves in zones 1-4 to 7m column pitch/9m row pitch (5m/7m clear gaps). No graves created or removed; B and other objects preserved; overflow/overlap permitted by user.");
+        Debug.Log("Panteon: expanded all existing graves without reducing population.");
+    }
     [MenuItem("Tools/Panteon/Apply Sketch Layout 150x150")]
     public static void Build()
     {
