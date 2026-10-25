@@ -11,7 +11,8 @@ public class Enemy_FSM : MonoBehaviour
         PATROL,
         CHASE,
         ALTARED,
-        ATTACK
+        ATTACK,
+        RETURNING_TO_GRAVE
     }
 
 
@@ -33,10 +34,14 @@ public class Enemy_FSM : MonoBehaviour
     [SerializeField] float m_WaitAttackTime;
     bool m_isResting = false;
     bool m_isAttacking = false;
+    private bool hasReachedGrave;
+    private Vector3 graveDestination;
     [SerializeField] private LayerMask m_playerMask;
     [SerializeField] private LayerMask m_obstacleMask;
     [SerializeField] private LayerMask m_AIGroundMask;
     
+
+    public bool IsReturningToGrave => m_enemyState == EnemyState.RETURNING_TO_GRAVE;
 
     private void Awake()
     {
@@ -52,6 +57,12 @@ public class Enemy_FSM : MonoBehaviour
     }
     protected void EnemyFSM_Update()
     {
+        if (IsReturningToGrave)
+        {
+            ReturnToGraveState();
+            return;
+        }
+
         IsObjectiveOnSight();
         switch (m_enemyState)
         {
@@ -73,6 +84,65 @@ public class Enemy_FSM : MonoBehaviour
                 break;
         }
         
+    }
+
+    /// <summary>Accepts only complete paths; a failed request leaves the current AI behavior intact.</summary>
+    public bool TryReturnToGrave(Vector3 destination)
+    {
+        if (!isActiveAndEnabled || IsReturningToGrave || m_agent == null ||
+            !m_agent.isActiveAndEnabled || !m_agent.isOnNavMesh) return false;
+
+        var path = new NavMeshPath();
+        if (!m_agent.CalculatePath(destination, path) || path.status != NavMeshPathStatus.PathComplete ||
+            !m_agent.SetPath(path)) return false;
+
+        // An attack coroutine can otherwise reactivate its hitbox or overwrite the state later.
+        StopAllCoroutines();
+        m_isAttacking = false;
+        m_isResting = false;
+        if (m_attackTrigger != null) m_attackTrigger.SetActive(false);
+        hasReachedGrave = false;
+        graveDestination = destination;
+        m_enemyState = EnemyState.RETURNING_TO_GRAVE;
+        m_agent.isStopped = false;
+        return true;
+    }
+
+    private void ReturnToGraveState()
+    {
+        if (hasReachedGrave || m_agent == null || !m_agent.isActiveAndEnabled || !m_agent.isOnNavMesh ||
+            m_agent.pathPending) return;
+
+        float arrivalDistance = Mathf.Max(m_agent.stoppingDistance, 0.1f);
+        Vector3 offset = m_agent.nextPosition - graveDestination;
+        offset.y = 0f;
+        // Unity can clear hasPath on arrival before this update observes the final distance.
+        bool arrived = m_agent.hasPath
+            ? m_agent.pathStatus == NavMeshPathStatus.PathComplete && m_agent.remainingDistance <= arrivalDistance
+            : offset.sqrMagnitude <= arrivalDistance * arrivalDistance;
+        if (arrived)
+        {
+            hasReachedGrave = true;
+            m_agent.ResetPath();
+            m_agent.isStopped = true;
+        }
+        else if (!m_agent.hasPath || m_agent.pathStatus != NavMeshPathStatus.PathComplete)
+        {
+            ResumePatrol();
+        }
+        // Stay at the grave until ResumePatrol is explicitly called.
+    }
+
+    public void ResumePatrol()
+    {
+        if (!IsReturningToGrave) return;
+        if (m_agent != null && m_agent.isActiveAndEnabled && m_agent.isOnNavMesh)
+        {
+            m_agent.ResetPath();
+            m_agent.isStopped = false;
+        }
+        m_patrolPosition = m_PatrolPositionDefault;
+        m_enemyState = EnemyState.PATROL;
     }
 
     #region StateFunctions

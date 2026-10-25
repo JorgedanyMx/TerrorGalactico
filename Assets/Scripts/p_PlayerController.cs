@@ -140,6 +140,19 @@ public class p_PlayerController : MonoBehaviour
         cam = Camera.main;
     }
 
+    void OnDisable()
+    {
+        if (Move != null)
+        {
+            Move.performed -= PlayerMove;
+            Move.canceled -= PlayerStoppedMoving;
+        }
+        if (Jump != null) Jump.started -= PlayerJump;
+        if (Shoot != null) Shoot.started -= PlayerShoot;
+        if (Offer != null) Offer.started -= PlayerOffer;
+        dir = Vector3.zero;
+    }
+
     void Start()
     {
         jumping = false;
@@ -171,7 +184,7 @@ public class p_PlayerController : MonoBehaviour
     }
     void PlayerOffer(InputAction.CallbackContext context)
     {
-        
+        GetComponent<PlayerOffering>()?.TryThrowOffering();
     }
     
     void FixedUpdate()

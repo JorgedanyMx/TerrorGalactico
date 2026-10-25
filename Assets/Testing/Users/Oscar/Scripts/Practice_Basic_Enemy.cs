@@ -43,6 +43,7 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
         switch(m_enemyState)
         {
             case EnemyState.PATROL:
+            case EnemyState.RETURNING_TO_GRAVE:
                 m_animator.SetFloat("Speed", p_speed, 0.1f, Time.deltaTime);
                 m_animator.SetBool("IsAttacking", false);
                 break;

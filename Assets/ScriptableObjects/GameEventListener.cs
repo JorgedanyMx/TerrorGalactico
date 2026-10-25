@@ -7,9 +7,15 @@ public class GameEventListener : MonoBehaviour
 {
     public GameEvent Event;
     public UnityEvent Response;
+    public UnityEvent<GameObject> ResponseWithTarget = new UnityEvent<GameObject>();
     public void OnEventRise()
     {
             Response.Invoke();
+    }
+
+    public void OnEventRise(GameObject target)
+    {
+        ResponseWithTarget?.Invoke(target);
     }
     private void OnEnable(){
         Event.RegisterListener(this);
@@ -18,4 +24,4 @@ public class GameEventListener : MonoBehaviour
         Event.UnregisterListener(this);
     }
 }
-    
+

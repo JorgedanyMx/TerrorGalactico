@@ -12,6 +12,15 @@ public class GameEvent : ScriptableObject
             eventListeners[i].OnEventRise();
         }
     } 
+
+    /// <summary>Raises the event with the actor involved, such as the enemy receiving an offering.</summary>
+    public void Raise(GameObject target)
+    {
+        for (int i = eventListeners.Count - 1; i >= 0; i--)
+        {
+            eventListeners[i].OnEventRise(target);
+        }
+    }
     public void RegisterListener(GameEventListener listener)
     {
         if(!eventListeners.Contains(listener))
