@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 8630bbe9657843e7b561371696f90af7
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      43: 4300000
+    second: EntranceArchTrimBack
+  externalObjects: {}
+  materials:
+    materialImportMode: 0
+  meshes:
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useFileUnits: 0
+    weldVertices: 1
+    fileIdsGeneration: 2
+    isReadable: 0
+  tangentSpace:
+    normalSmoothAngle: 45
+    normalImportMode: 1
+    tangentImportMode: 3
+  importAnimation: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

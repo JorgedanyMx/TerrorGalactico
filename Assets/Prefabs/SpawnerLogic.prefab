@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4832143511385349592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7139413967300058502}
+  - component: {fileID: 7715650369421542470}
+  - component: {fileID: 8752742884998218242}
+  - component: {fileID: 6214698658164833461}
+  m_Layer: 0
+  m_Name: SpawnerLogic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7139413967300058502
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4832143511385349592}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0, y: -0, z: -0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7715650369421542470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4832143511385349592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7add41fe0bd48f14dbc7af84bede9282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CameraAreaSpawner
+  prefabs:
+  - {fileID: 5581655270960266527, guid: 6bced6a57a5802742876dc92746933b7, type: 3}
+  - {fileID: 7557939269951661689, guid: bb558285fb2d65340b6aa9a3c2ccc53d, type: 3}
+  piecesPerAppearance: 3
+  spawnerVisual: {fileID: 6298766776879118538, guid: e563c91b319f11041a4833bc4a2c41bd, type: 3}
+  autoSpawn: 1
+  appearOnStart: 1
+  intervalRange: {x: 100, y: 100}
+  stayRange: {x: 2, y: 3}
+  dropRadius: 4
+  minDropDistance: 2
+  pieceHeightOffset: 0.2
+  pieceLifetime: 10
+  pieceScaleTime: 0.3
+  riseDepth: 2
+  riseTime: 0.5
+  targetCamera: {fileID: 0}
+  viewportMargin: 0.054
+  limitToCollider: {fileID: 0}
+  groundHeight: 0
+  spawnHeightOffset: 0.5
+  blockedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  clearanceRadius: 0.5
+  maxPlacementAttempts: 10
+--- !u!114 &8752742884998218242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4832143511385349592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22067450d8601f74c9a9fe19c898d15f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PieceCounter
+  piecesNeeded: 3
+  resetAfterReached: 1
+  onCountChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: RandomFunctions, Assembly-CSharp
+        m_MethodName: DebugLogFun
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Este es el manager
+          m_BoolArgument: 0
+        m_CallState: 2
+  onTargetReached:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: d7408f305af7af043a561cc64faaef72, type: 3}
+        m_TargetAssemblyTypeName: UnityEditor.MonoScript, UnityEditor.CoreModule
+        m_MethodName: set_name
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Consigue todo
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &6214698658164833461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4832143511385349592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
+  Event: {fileID: 11400000, guid: e1312fbe978869141a67de1aca5cd935, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7715650369421542470}
+        m_TargetAssemblyTypeName: CameraAreaSpawner, Assembly-CSharp
+        m_MethodName: AppearNow
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: RandomFunctions, Assembly-CSharp
+        m_MethodName: DebugLogFun
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Si jala solo el script
+          m_BoolArgument: 0
+        m_CallState: 2

@@ -126,8 +126,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3003e12c42a336b48b543f10fdcf7e69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::p_BulletStats
-  damage: 0
-  shooter: {fileID: 0}
+  damage: 10
+  shooter: {fileID: 7557939269951661689, guid: bb558285fb2d65340b6aa9a3c2ccc53d, type: 3}
   bounce: 0
 --- !u!54 &3772973090501776115
 Rigidbody:
