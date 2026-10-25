@@ -47,13 +47,11 @@ public class p_CursorHandler : MonoBehaviour
 
     void OnCursorClick(InputAction.CallbackContext context)
     {
-        if (stats.CurrentBullets <= 0)
-            return;
 
-        Vector3 direction = new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.y).normalized;
+        Vector3 direction = new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.z).normalized;
 
         shootLogic.Shoot(player.transform.position, player.transform.position + direction,
-                         stats.PlayerDamage, bulletPrefab, player, stats.bulletBounce);
-        stats.CurrentBullets--;
+                         stats.PlayerDamage, bulletPrefab, player);
+        Debug.Log($"cursor local: {cursorObject.localPosition}  dir: {direction}");
     }
 }

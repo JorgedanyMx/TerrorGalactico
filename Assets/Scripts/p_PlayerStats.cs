@@ -1,40 +1,29 @@
 using System.Collections;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage
 {
     public static event System.Action<float> OnHealthChanged;
-    public static event System.Action<bool> OnPlayerReload;
-    public static event System.Action<int, int> OnAmmoChanged;
 
     public float maxHealth = 100f;
     public float PlayerDamage = 10f;
-    public int bulletBounce = 2;
-    public int maxBullets = 5;
-    public float reloadTime = 4f;
-
-    public float Health { get; private set; }
-
-    private int currentBullets;
-    public int CurrentBullets
+    private int collected;
+    public int Collected
     {
-        get { return currentBullets; }
         set
         {
-            currentBullets = value;
-            OnAmmoChanged?.Invoke(currentBullets, maxBullets);
-
-            if (currentBullets == 0)
-                StartCoroutine(Reload());
+            collected = collected + value > 3 ? collected = 3 : collected + value;
         }
+        get { return collected;}
     }
+
+    public float Health { get; private set; }
 
     void Start()
     {
         Health = maxHealth;
-        currentBullets = maxBullets;
         OnHealthChanged?.Invoke(Health);
-        OnAmmoChanged?.Invoke(currentBullets, maxBullets);
     }
 
     public void TakeDamage(float damage)
@@ -43,18 +32,25 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage
         OnHealthChanged?.Invoke(Health);
     }
 
+    public void ResetCollected()
+    {
+        collected = 0;
+    }
+
     public void Heal(float healAmount)
     {
         Health = Mathf.Min(Health + healAmount, maxHealth);
         OnHealthChanged?.Invoke(Health);
     }
 
-    IEnumerator Reload()
+    void OnCollisionEnter(Collision collision)
     {
-        OnPlayerReload?.Invoke(true);
-        yield return new WaitForSeconds(reloadTime);
-        currentBullets = maxBullets;
-        OnPlayerReload?.Invoke(false);
-        OnAmmoChanged?.Invoke(currentBullets, maxBullets);
+        p_ICanCollect obj = collision.gameObject.GetComponent<p_ICanCollect>();
+        if (obj != null)
+        {
+            obj.Collect();
+
+        }
+            
     }
 }
