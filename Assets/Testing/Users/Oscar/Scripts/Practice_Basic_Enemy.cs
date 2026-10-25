@@ -1,9 +1,10 @@
 using UnityEngine;
 
-public class Practice_Basic_Enemy : Enemy_FSM
+public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
 {
     private Animator m_animator;
     private bool frozen;
+    public float Health = 100f;
     void Start()
     {
         m_animator = GetComponent<Animator>();
@@ -55,6 +56,14 @@ public class Practice_Basic_Enemy : Enemy_FSM
                 m_animator.SetBool("IsAttacking", true);
                 break;
 
+        }
+    }
+    public void TakeDamage(float damage)
+    {
+        Health = Mathf.Max(Health - damage, 0f);
+        if (Health <= 0f)
+        {
+            Destroy(gameObject);
         }
     }
 }

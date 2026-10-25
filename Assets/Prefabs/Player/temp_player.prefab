@@ -519,6 +519,7 @@ GameObject:
   - component: {fileID: 4582813183366619310}
   - component: {fileID: 6029272556434211823}
   - component: {fileID: 6938409013325704331}
+  - component: {fileID: 881349867460682136}
   m_Layer: 0
   m_Name: temp_player
   m_TagString: Player
@@ -652,6 +653,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::p_PlayerStats
   maxHealth: 100
   PlayerDamage: 10
+--- !u!114 &881349867460682136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4600947062306779510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42bd5348e4c95a14e86308e21e629cba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Selectable
 --- !u!1 &8362364700897334002
 GameObject:
   m_ObjectHideFlags: 0

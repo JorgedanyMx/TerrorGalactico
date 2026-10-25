@@ -167,7 +167,7 @@ public class Enemy_FSM : MonoBehaviour
             if (!Physics.Raycast(transform.position, p_directionToPlayer, p_distanceToPlayer, m_obstacleMask)){
                 //CheckForObstacles();
                 m_objectiveOnSight = true;
-                Debug.Log("Viendo al jugador");
+                //Debug.Log("Viendo al jugador");
             }
             else{
                 m_objectiveOnSight = false;
