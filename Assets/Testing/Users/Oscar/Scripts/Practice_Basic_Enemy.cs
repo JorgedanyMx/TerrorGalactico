@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
 {
-    private Animator m_animator;
+    public Animator m_animator;
     private bool frozen;
     public float Health = 100f;
     void Start()
     {
-        m_animator = GetComponent<Animator>();
+        //m_animator = GetComponent<Animator>();
         GameObject jugadorObj = GameObject.FindWithTag("Player");
         SetTarget(jugadorObj.transform);
     }
@@ -54,7 +54,8 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
             case EnemyState.ATTACK:
                 //animator.SetBool("Walking", false);
                 //m_animator.SetTrigger("Attacking");
-                m_animator.SetBool("IsAttacking", true);
+                //m_animator.SetBool("IsAttacking", true);
+                m_animator.SetTrigger("Attack");
                 break;
 
         }
