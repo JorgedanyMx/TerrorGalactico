@@ -7,7 +7,7 @@ public class p_ShootLogic : MonoBehaviour
 
     public void Shoot(Vector3 from, Vector3 to, float damage, GameObject bulletPrefab, GameObject shooter, int bounce = 0)
     {
-        // Keep bullets on the ground plane
+        
         Vector3 direction = to - from;
         direction.y = 0;
         direction.Normalize();
