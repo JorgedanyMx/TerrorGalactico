@@ -46,7 +46,10 @@ public class Enemy_FSM : MonoBehaviour
         m_attackTrigger.SetActive(false);
         m_PatrolPositionDefault = new Vector3(0, 0, 0);
     }
-
+    public void SetTarget(Transform targetTrans)
+    {
+        m_objective = targetTrans;
+    }
     protected void EnemyFSM_Update()
     {
         IsObjectiveOnSight();
@@ -130,11 +133,11 @@ public class Enemy_FSM : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, m_attackRadious);
 
-        // Dibuja el radio de visión
+        // Dibuja el radio de visiï¿½n
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, m_sightRadious);
 
-        // Dibuja las líneas del ángulo de visión
+        // Dibuja las lï¿½neas del ï¿½ngulo de visiï¿½n
         Vector3 leftLimit = Quaternion.Euler(0, -m_sightAngle, 0) * transform.forward;
         Vector3 rightLimit = Quaternion.Euler(0, m_sightAngle, 0) * transform.forward;
         Gizmos.color = Color.red;
@@ -143,6 +146,12 @@ public class Enemy_FSM : MonoBehaviour
     }
 
     private void IsObjectiveOnSight(){
+
+        if (m_objective == null)
+    {
+        m_objectiveOnSight = false;
+        return;
+    }
         Collider[] p_playerOnSight = Physics.OverlapSphere(transform.position, m_sightRadious, m_playerMask);
 
         if(p_playerOnSight.Length <= 0){
@@ -158,6 +167,7 @@ public class Enemy_FSM : MonoBehaviour
             if (!Physics.Raycast(transform.position, p_directionToPlayer, p_distanceToPlayer, m_obstacleMask)){
                 //CheckForObstacles();
                 m_objectiveOnSight = true;
+                Debug.Log("Viendo al jugador");
             }
             else{
                 m_objectiveOnSight = false;
@@ -181,6 +191,7 @@ public class Enemy_FSM : MonoBehaviour
 
     private void LastKnownLocation()
     {
+
         Vector3 p_lastKnownLocation = new Vector3(m_objective.position.x, m_objective.position.y, m_objective.position.z);
         m_patrolPosition = p_lastKnownLocation;
         m_enemyState = EnemyState.PATROL;
@@ -190,10 +201,10 @@ public class Enemy_FSM : MonoBehaviour
     {
         NavMeshPath path = new NavMeshPath();
 
-        // Calcula un camino desde la posición actual hasta el target
+        // Calcula un camino desde la posiciï¿½n actual hasta el target
         if (m_agent.CalculatePath(p_targetPosition, path))
         {
-            // Checa si la ruta está completa
+            // Checa si la ruta estï¿½ completa
             return path.status == NavMeshPathStatus.PathComplete;
         }
 

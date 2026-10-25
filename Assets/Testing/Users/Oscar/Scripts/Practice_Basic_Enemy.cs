@@ -7,7 +7,8 @@ public class Practice_Basic_Enemy : Enemy_FSM
     void Start()
     {
         m_animator = GetComponent<Animator>();
-        
+        GameObject jugadorObj = GameObject.FindWithTag("Player");
+        SetTarget(jugadorObj.transform);
     }
 
     private void OnEnable()
