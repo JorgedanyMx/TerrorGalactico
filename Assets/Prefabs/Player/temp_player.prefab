@@ -365,7 +365,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 6754912272156815745, guid: f0dcb643b450a4f4c9444b871bef234b, type: 3}
   lookObject: {fileID: 8316411098616322122}
   turnSpeed: 0
-  offerPrefab: {fileID: 6754912272156815745, guid: 88aa904ea7e1f15458e0a3b4062bed21, type: 3}
+  offerPrefab: {fileID: 2531075512260317018, guid: f0624065803de4539b08680d6b2c6245, type: 3}
   offerDamage: 0
   offerBounce: 0
   ShootSFX: {fileID: 8300000, guid: 6f033404b55a4421888a740c9894d15b, type: 3}
@@ -675,9 +675,6 @@ GameObject:
   - component: {fileID: 4582813183366619310}
   - component: {fileID: 6938409013325704331}
   - component: {fileID: 881349867460682136}
-  - component: {fileID: 3847818945650595352}
-  - component: {fileID: 865402593752686670}
-  - component: {fileID: 7503549550431279301}
   m_Layer: 0
   m_Name: temp_player
   m_TagString: Player
@@ -791,9 +788,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::p_PlayerStats
   maxHealth: 100
   PlayerDamage: 20
-  final: {fileID: 0}
-  Damageclip: {fileID: 8300000, guid: eecf86d8659cb0a40884345252b44657, type: 3}
-  TakeItem: {fileID: 8300000, guid: a5431a90e6d3b2b48b46b300d4b9c7ea, type: 3}
 --- !u!114 &881349867460682136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -806,165 +800,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42bd5348e4c95a14e86308e21e629cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Selectable
---- !u!114 &3847818945650595352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4600947062306779510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
-  Event: {fileID: 11400000, guid: 48365e99816606940a2202fa70da7836, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6938409013325704331}
-        m_TargetAssemblyTypeName: p_PlayerStats, Assembly-CSharp
-        m_MethodName: TakeDamage
-        m_Mode: 4
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 10
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  ResponseWithTarget:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!82 &865402593752686670
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4600947062306779510}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &7503549550431279301
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4600947062306779510}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
-  Event: {fileID: 11400000, guid: 1680e725b6be35f48aff7b1a5cd7cc6f, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6938409013325704331}
-        m_TargetAssemblyTypeName: p_PlayerStats, Assembly-CSharp
-        m_MethodName: PlayWithRandomPitch
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 8300000, guid: a5431a90e6d3b2b48b46b300d4b9c7ea, type: 3}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.AudioClip, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  ResponseWithTarget:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &8362364700897334002
 GameObject:
   m_ObjectHideFlags: 0
