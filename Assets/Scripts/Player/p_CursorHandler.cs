@@ -80,6 +80,8 @@ public class p_CursorHandler : MonoBehaviour
     private p_PlayerStats stats;
     private InputAction cursorAction;
     private InputAction cursorClickAction;
+    public AudioClip ShootSFX;
+    private AudioSource audioSource;
 
     void OnEnable()
     {
@@ -153,5 +155,13 @@ public class p_CursorHandler : MonoBehaviour
         Vector3 direction = GetAimDirection();
         shootLogic.Shoot(player.transform.position, player.transform.position + direction,
                          damage, prefab, player, bounce);
+        PlayWithRandomPitch();
     }
+    public void PlayWithRandomPitch()
+    {
+        if(audioSource == null) audioSource = GetComponent<AudioSource>();
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
+        audioSource.PlayOneShot(audioSource.clip);
+    }
+
 }

@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
 {
     public Animator m_animator;
     private bool frozen;
     public float Health = 100f;
+    public AudioClip damagedAClip;
+    private AudioSource m_audioSource;
     void Start()
     {
         //m_animator = GetComponent<Animator>();
@@ -62,10 +65,17 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
     }
     public void TakeDamage(float damage)
     {
+        PlayWithRandomPitch(damagedAClip);
         Health = Mathf.Max(Health - damage, 0f);
         if (Health <= 0f)
         {
             Destroy(gameObject);
         }
+    }
+    public void PlayWithRandomPitch(AudioClip audio)
+    {
+        if (m_audioSource == null) m_audioSource = GetComponent<AudioSource>();
+        m_audioSource.pitch = Random.Range(0.9f, 1.1f);
+        m_audioSource.PlayOneShot(audio);
     }
 }

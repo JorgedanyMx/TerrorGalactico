@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Audio;
 
 /// <summary>Sends the enemy supplied by a GameEvent to a random reachable grave.</summary>
 [DisallowMultipleComponent]
@@ -18,6 +19,7 @@ public sealed class EnemyGraveReturn : MonoBehaviour
 
     private readonly List<Transform> candidates = new List<Transform>();
     private readonly List<GraveJourney> journeys = new List<GraveJourney>();
+    private AudioSource audioSource;
 
     private sealed class GraveJourney
     {
@@ -128,8 +130,9 @@ public sealed class EnemyGraveReturn : MonoBehaviour
         }
     }
 
-    private static void BeginDisappearance(GraveJourney journey)
+    private void BeginDisappearance(GraveJourney journey)
     {
+        PlayWithRandomPitch();
         journey.sinking = true;
         journey.arrivalPosition = journey.enemy.transform.position;
         journey.enemy.StopAllCoroutines();
@@ -181,5 +184,11 @@ public sealed class EnemyGraveReturn : MonoBehaviour
         // Cancelling this manager must not leave an active enemy without navigation or collisions.
         foreach (GraveJourney journey in journeys) Restore(journey);
         journeys.Clear();
+    }
+    public void PlayWithRandomPitch()
+    {
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
+        audioSource.PlayOneShot(audioSource.clip);
     }
 }
