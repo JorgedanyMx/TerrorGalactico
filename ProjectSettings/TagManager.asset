@@ -7,6 +7,7 @@ TagManager:
   - Ghost
   - bullet
   - Ofrenda
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -14,9 +15,9 @@ TagManager:
   - Floor
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Player
+  - AIGround
+  - Wall
   - 
   - 
   - 
