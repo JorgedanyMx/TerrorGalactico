@@ -39,6 +39,7 @@ public class Enemy_FSM : MonoBehaviour
     [SerializeField] private LayerMask m_playerMask;
     [SerializeField] private LayerMask m_obstacleMask;
     [SerializeField] private LayerMask m_AIGroundMask;
+    public GameEvent AttackingPlayer;
     
 
     public bool IsReturningToGrave => m_enemyState == EnemyState.RETURNING_TO_GRAVE;
@@ -283,9 +284,10 @@ public class Enemy_FSM : MonoBehaviour
 
     IEnumerator AttackPlayer(float p_distanceToPlayer)
     {
-        Debug.Log("atacado");
+
         m_agent.SetDestination(transform.position);
         m_isAttacking = true;
+        AttackingPlayer.Raise();
         yield return new WaitForSeconds(m_WaitAttackTime);
         m_attackTrigger.SetActive(true);
         yield return new WaitForSeconds(m_attackTime - m_WaitAttackTime);
