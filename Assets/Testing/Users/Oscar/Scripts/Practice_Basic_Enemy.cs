@@ -8,9 +8,14 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
     public float Health = 100f;
     public AudioClip damagedAClip;
     private AudioSource m_audioSource;
+    private bool m_hasAttackTrigger;
     void Start()
     {
         //m_animator = GetComponent<Animator>();
+        if (m_animator != null)
+            foreach (var parameter in m_animator.parameters)
+                if (parameter.name == "Attack" && parameter.type == AnimatorControllerParameterType.Trigger)
+                    m_hasAttackTrigger = true;
         GameObject jugadorObj = GameObject.FindWithTag("Player");
         SetTarget(jugadorObj.transform);
     }
@@ -58,7 +63,7 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
                 //animator.SetBool("Walking", false);
                 //m_animator.SetTrigger("Attacking");
                 //m_animator.SetBool("IsAttacking", true);
-                m_animator.SetTrigger("Attack");
+                if (m_hasAttackTrigger) m_animator.SetTrigger("Attack");
                 break;
 
         }
@@ -74,7 +79,9 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
     }
     public void PlayWithRandomPitch(AudioClip audio)
     {
+        if (audio == null) return;
         if (m_audioSource == null) m_audioSource = GetComponent<AudioSource>();
+        if (m_audioSource == null) m_audioSource = gameObject.AddComponent<AudioSource>();
         m_audioSource.pitch = Random.Range(0.9f, 1.1f);
         m_audioSource.PlayOneShot(audio);
     }

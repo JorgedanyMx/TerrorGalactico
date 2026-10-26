@@ -287,7 +287,7 @@ public class Enemy_FSM : MonoBehaviour
 
         m_agent.SetDestination(transform.position);
         m_isAttacking = true;
-        AttackingPlayer.Raise();
+        AttackingPlayer?.Raise();
         yield return new WaitForSeconds(m_WaitAttackTime);
         m_attackTrigger.SetActive(true);
         yield return new WaitForSeconds(m_attackTime - m_WaitAttackTime);

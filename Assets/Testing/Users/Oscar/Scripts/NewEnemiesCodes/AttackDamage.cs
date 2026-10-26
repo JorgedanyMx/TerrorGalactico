@@ -1,25 +1,20 @@
-/*using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine;
 
-public class AttackDamage : MonoBehaviour {
-    [SerializeField] private LifeManager m_lifeManager;
-    [SerializeField] private ScreamerData_SO m_screamerData;
-    [SerializeField] private int m_damageToDo;
+/// <summary>Hits each living player once whenever the enemy activates this hitbox.</summary>
+public sealed class AttackDamage : MonoBehaviour
+{
+    [SerializeField, Min(0)] private int m_damageToDo = 10;
+    private readonly HashSet<p_PlayerStats> hitPlayers = new HashSet<p_PlayerStats>();
 
+    private void OnEnable() => hitPlayers.Clear();
+    private void OnTriggerEnter(Collider other) => TryHit(other);
+    private void OnTriggerStay(Collider other) => TryHit(other);
 
-    private void OnEnable()
+    private void TryHit(Collider other)
     {
-        if (m_lifeManager == null)
-        {
-            m_lifeManager = LifeManager.instance;
-        }
+        var player = other.GetComponentInParent<p_PlayerStats>();
+        if (player == null || player.Health <= 0f || !hitPlayers.Add(player)) return;
+        player.TakeDamage(m_damageToDo);
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            LifeManager.instance.TakeDamage(m_damageToDo);
-            ScreamersManager.instance?.SetScreamerData(m_screamerData);
-        }
-    }
-}*/
+}
