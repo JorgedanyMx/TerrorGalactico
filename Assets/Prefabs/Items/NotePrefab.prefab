@@ -67,7 +67,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'El hereje no es el que arde en la hoguera, sino el que la enciende.
 
-    
+
 
 '
   m_isRightToLeft: 0
@@ -96,8 +96,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 18
-  m_fontSizeBase: 18
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 10
@@ -187,8 +187,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6be50932e1b431345b3d1b64d3e9bcf3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Notes
-  mesh: {fileID: 3295469269840998806}
-  tmpText: {fileID: 684434575404790824}
+  Nname: 
+  NCont: 
+  NameNoteRef: {fileID: 0}
+  ContentNoteRef: {fileID: 0}
+  noteInspectionScale: 1.6
 --- !u!1 &1142541009838148143
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,10 +504,5 @@ PrefabInstance:
 --- !u!4 &2805755193573436204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2d996cf05d7cad849909d9e1fe94df05, type: 3}
-  m_PrefabInstance: {fileID: 2412436292892331207}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &3295469269840998806 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2d996cf05d7cad849909d9e1fe94df05, type: 3}
   m_PrefabInstance: {fileID: 2412436292892331207}
   m_PrefabAsset: {fileID: 0}
