@@ -68,9 +68,13 @@ public class p_CursorHandler : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject bulletPrefab;
 
+    [Header("Look At Cursor")]
+    [SerializeField] private Transform lookObject;   // the object that turns toward the cursor
+    [SerializeField] private float turnSpeed = 0f;   // 0 = snap instantly, higher = smoother
+
     [Header("Offer")]
     [SerializeField] private GameObject offerPrefab;
-    public float offerDamage = 0f;   // 0 = purely an offering, no damage
+    public float offerDamage = 0f;
     public int offerBounce = 0;
 
     private p_PlayerStats stats;
@@ -101,6 +105,20 @@ public class p_CursorHandler : MonoBehaviour
         cursorClickAction.Disable();
     }
 
+    void LateUpdate()
+    {
+        if (lookObject == null) return;
+
+        Vector3 dir = GetAimDirection();
+        if (dir == Vector3.zero) return;
+
+        Quaternion target = Quaternion.LookRotation(dir, Vector3.up);
+
+        lookObject.rotation = turnSpeed <= 0f
+            ? target
+            : Quaternion.Slerp(lookObject.rotation, target, turnSpeed * Time.deltaTime);
+    }
+
     void OnCursorMove(InputAction.CallbackContext context)
     {
         Vector2 delta = context.ReadValue<Vector2>() * Time.deltaTime;
@@ -124,11 +142,15 @@ public class p_CursorHandler : MonoBehaviour
         Fire(offerPrefab, offerDamage, offerBounce);
     }
 
+    // Single source of truth for aiming, used by both shooting and looking
+    private Vector3 GetAimDirection()
+    {
+        return new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.z).normalized;
+    }
+
     private void Fire(GameObject prefab, float damage, int bounce)
     {
-        // The cursor moves on X/Z, so aim with localPosition.z (not .y)
-        Vector3 direction = new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.z).normalized;
-
+        Vector3 direction = GetAimDirection();
         shootLogic.Shoot(player.transform.position, player.transform.position + direction,
                          damage, prefab, player, bounce);
     }
