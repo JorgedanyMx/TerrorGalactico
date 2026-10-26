@@ -4,11 +4,16 @@ public class Practice_Basic_Enemy : Enemy_FSM
 {
     private Animator m_animator;
     private bool frozen;
+    
     void Start()
     {
         m_animator = GetComponent<Animator>();
-        GameObject jugadorObj = GameObject.FindWithTag("Player");
-        SetTarget(jugadorObj.transform);
+        if(m_objective == null)
+        {
+            GameObject jugadorObj = GameObject.FindWithTag("Player");
+            SetTarget(jugadorObj.transform);
+
+        }
     }
 
     private void OnEnable()

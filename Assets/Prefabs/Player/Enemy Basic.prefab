@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 1155361579136628625}
   - component: {fileID: 383608373277179901}
   - component: {fileID: 2560625464950206100}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Enemy Basic
   m_TagString: Ghost
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 126
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!195 &1155361579136628625
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -189,19 +189,19 @@ MonoBehaviour:
   m_sightAngle: 70
   m_patrolRadious: 10
   m_attackRadious: 2
-  m_newPatrolPointDistance: 2
+  m_newPatrolPointDistance: 10
   m_restTime: 1
   m_attackTime: 1
   m_WaitAttackTime: 0
   m_playerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
   m_obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_AIGroundMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 128
 --- !u!95 &2560625464950206100
 Animator:
   serializedVersion: 7
