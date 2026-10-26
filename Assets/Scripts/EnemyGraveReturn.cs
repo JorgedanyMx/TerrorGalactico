@@ -1,7 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Audio;
+
+[System.Serializable]
+public struct GraveNoteEntry
+{
+    public string name;
+    [TextArea(2, 5)] public string content;
+
+    public GraveNoteEntry(string name, string content)
+    {
+        this.name = name;
+        this.content = content;
+    }
+}
 
 /// <summary>Sends the enemy supplied by a GameEvent to a random reachable grave.</summary>
 [DisallowMultipleComponent]
@@ -17,9 +29,35 @@ public sealed class EnemyGraveReturn : MonoBehaviour
     [Tooltip("World-space distance to sink before deactivating the enemy.")]
     [SerializeField, Min(0.01f)] private float sinkDepth = 3f;
 
+    [Header("Note drop after burial")]
+    [Tooltip("Visible note prefab dropped after each ghost disappears. A pickup collider is added at runtime if needed.")]
+    [SerializeField] private GameObject notePickupPrefab;
+    [Tooltip("The NotePrefab visual, used only while inspecting the picked-up note.")]
+    [SerializeField] private GameObject noteInspectionPrefab;
+    [Tooltip("Optional InspectItems prefab. Used if the scene has no ObjectInspector yet.")]
+    [SerializeField] private GameObject inspectionUiPrefab;
+    [SerializeField] private Vector3 noteDropOffset = new Vector3(0f, 0.35f, 0f);
+    [SerializeField] private GraveNoteEntry[] notes =
+    {
+        new GraveNoteEntry("Texotli", "Aquí yacen los restos de Texotli, abuelo que ayudó a crear el albarradón de la alianza."),
+        new GraveNoteEntry("Xitzin", "Gran ser querido que murió a mano de los tenochcas durante la liberación de Tlaxcallan."),
+        new GraveNoteEntry("Yolotl", "Para mi padre, que murió defendiendo nuestro pueblo de Calacoaya."),
+        new GraveNoteEntry("Tetl", "De los primeros acolhuas en llegar a Huizachtepetl, nos dejó tanto para recordar."),
+        new GraveNoteEntry("Ameyal", "Hermano querido, nos ayudó a levantar el templo rojo de tenochtitlan, antes que todo fuera destruido."),
+        new GraveNoteEntry("Juan", "Querido padre, murió en 1629 debido a la gran inundación."),
+        new GraveNoteEntry("Maria 1787", "Hija amada, ahora estás al cuidado de San Sixto después que el terremoto nos la quitara."),
+        new GraveNoteEntry("Fernando 1597", "Respetado profesor y esposo, tus alumnos de la Real y Pontificia Universidad te extrañaremos."),
+        new GraveNoteEntry("Soledad 1780", "Victima de la epidemia que nos ha quitado mucha gente en estos días, que dios nos la cuide."),
+        new GraveNoteEntry("Diego 1813", "Insurgente abatido, luchó por su pueblo y su gente, con valor y resistencia."),
+        new GraveNoteEntry("Armando 1913", "Militar abatido en el levantamiento de Victoriano Huerta."),
+        new GraveNoteEntry("Fernanda 1985", "Enfermera del hospital general, seguiremos compartiendo tu espíritu de ayudar a los demás."),
+        new GraveNoteEntry("Felipe 1927", "Amado amigo sobreviviente de la huelga de Rio Blanco, que emigró a la ciudad."),
+        new GraveNoteEntry("Carlos 1928", "Sacerdote victima del conflicto armado con los politicos, la congregación te recordará con amor."),
+        new GraveNoteEntry("Carmen 1912", "Valiente enfermera y combatiente que acompañó a las tropas revolucionarias en los trenes sanitarios y frentes de batalla.")
+    };
+
     private readonly List<Transform> candidates = new List<Transform>();
     private readonly List<GraveJourney> journeys = new List<GraveJourney>();
-    private AudioSource audioSource;
 
     private sealed class GraveJourney
     {
@@ -123,6 +161,7 @@ public sealed class EnemyGraveReturn : MonoBehaviour
             if (progress < 1f) continue;
 
             journey.enemy.gameObject.SetActive(false);
+            DropNote(journey.destination);
             // Restore while inactive so a future spawn does not inherit disabled collisions or a sunken pose.
             Restore(journey);
             journey.enemy.ResumePatrol();
@@ -130,9 +169,27 @@ public sealed class EnemyGraveReturn : MonoBehaviour
         }
     }
 
-    private void BeginDisappearance(GraveJourney journey)
+    private void DropNote(Vector3 position)
     {
-        PlayWithRandomPitch();
+        if (notePickupPrefab == null || notes == null || notes.Length == 0) return;
+
+        GraveNoteEntry entry = notes[Random.Range(0, notes.Length)];
+        Quaternion rotation = Quaternion.identity;
+        if (Camera.main != null)
+        {
+            Vector3 towardPlayer = Camera.main.transform.position - position;
+            towardPlayer.y = 0f;
+            if (towardPlayer.sqrMagnitude > 0.01f)
+                rotation = Quaternion.LookRotation(-towardPlayer.normalized, Vector3.up);
+        }
+        GameObject pickup = Instantiate(notePickupPrefab, position + noteDropOffset, rotation);
+        Notes note = pickup.GetComponent<Notes>();
+        if (note == null) note = pickup.AddComponent<Notes>();
+        note.ConfigurePickup(entry.name, entry.content, noteInspectionPrefab, inspectionUiPrefab);
+    }
+
+    private static void BeginDisappearance(GraveJourney journey)
+    {
         journey.sinking = true;
         journey.arrivalPosition = journey.enemy.transform.position;
         journey.enemy.StopAllCoroutines();
@@ -184,11 +241,5 @@ public sealed class EnemyGraveReturn : MonoBehaviour
         // Cancelling this manager must not leave an active enemy without navigation or collisions.
         foreach (GraveJourney journey in journeys) Restore(journey);
         journeys.Clear();
-    }
-    public void PlayWithRandomPitch()
-    {
-        if (audioSource == null) audioSource = GetComponent<AudioSource>();
-        audioSource.pitch = Random.Range(0.9f, 1.1f);
-        audioSource.PlayOneShot(audioSource.clip);
     }
 }
