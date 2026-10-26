@@ -150,11 +150,11 @@ public class p_PlayerController : MonoBehaviour
 
     void PlayerMove(InputAction.CallbackContext context)
     {
-        if (!jumping)
-        {
+        // if (!jumping)
+        // {
             Vector2 input = context.ReadValue<Vector2>();
             dir = new Vector3(input.x, 0, input.y).normalized * Speed;
-        }
+        // }
     }
 
     void PlayerStoppedMoving(InputAction.CallbackContext context)
