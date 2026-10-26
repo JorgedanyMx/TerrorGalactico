@@ -159,6 +159,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2520176183898300616, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
+      propertyPath: cd
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3647287251111199796, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.448
@@ -243,9 +247,13 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6029272556434211823, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3647287251111199796, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1503713612}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
 --- !u!1 &410087039
@@ -471,6 +479,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+--- !u!4 &673515814 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3647287251111199796, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
+  m_PrefabInstance: {fileID: 266748684}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &675698519
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,6 +1103,72 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+--- !u!1 &1503713611
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1503713612}
+  - component: {fileID: 1503713614}
+  - component: {fileID: 1503713613}
+  m_Layer: 0
+  m_Name: jump_collisionBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1503713612
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503713611}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 673515814}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1503713613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503713611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd38529fd91179d488dbc4c2f434cbbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_JumpBox
+--- !u!65 &1503713614
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503713611}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.41122842, y: 0.38784385, z: 0.41732955}
+  m_Center: {x: 0.048704535, y: -0.9795412, z: 0.015473366}
 --- !u!4 &1763163455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2650295381327016510, guid: 6c89fcff16142bf4bad775b96dbda009, type: 3}
