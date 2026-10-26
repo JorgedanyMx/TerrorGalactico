@@ -2,7 +2,7 @@ using System.Collections;
 using System.Security.Cryptography;
 using UnityEngine;
 
-public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage
+public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage, p_ICanCollect
 {
     public static event System.Action<float> OnHealthChanged;
 
@@ -11,11 +11,8 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage
     private int collected;
     public int Collected
     {
-        set
-        {
-            collected = collected + value > 3 ? collected = 3 : collected + value;
-        }
-        get { return collected;}
+        get { return collected; }
+        set { collected = 0; }
     }
 
     public float Health { get; private set; }
@@ -43,14 +40,23 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage
         OnHealthChanged?.Invoke(Health);
     }
 
-    void OnCollisionEnter(Collision collision)
+    public void Collect()
     {
-        p_ICanCollect obj = collision.gameObject.GetComponent<p_ICanCollect>();
-        if (obj != null)
-        {
-            obj.Collect();
-
-        }
-            
+        if (collected == 3)
+            return;
+        collected++;
     }
+
+
+
+    // void OnCollisionEnter(Collision collision)
+    // {
+    //     p_ICanCollect obj = collision.gameObject.GetComponent<p_ICanCollect>();
+    //     if (obj != null)
+    //     {
+    //         obj.Collect();
+
+    //     }
+            
+    // }
 }
