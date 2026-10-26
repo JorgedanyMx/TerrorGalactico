@@ -11,7 +11,8 @@ public class Enemy_FSM : MonoBehaviour
         PATROL,
         CHASE,
         ALTARED,
-        ATTACK
+        ATTACK,
+        RETURNING_TO_GRAVE
     }
 
 
@@ -33,10 +34,14 @@ public class Enemy_FSM : MonoBehaviour
     [SerializeField] float m_WaitAttackTime;
     bool m_isResting = false;
     bool m_isAttacking = false;
+    private bool hasReachedGrave;
+    private Vector3 graveDestination;
     [SerializeField] private LayerMask m_playerMask;
     [SerializeField] private LayerMask m_obstacleMask;
     [SerializeField] private LayerMask m_AIGroundMask;
     
+
+    public bool IsReturningToGrave => m_enemyState == EnemyState.RETURNING_TO_GRAVE;
 
     private void Awake()
     {
@@ -46,9 +51,18 @@ public class Enemy_FSM : MonoBehaviour
         m_attackTrigger.SetActive(false);
         m_PatrolPositionDefault = new Vector3(0, 0, 0);
     }
-
+    public void SetTarget(Transform targetTrans)
+    {
+        m_objective = targetTrans;
+    }
     protected void EnemyFSM_Update()
     {
+        if (IsReturningToGrave)
+        {
+            ReturnToGraveState();
+            return;
+        }
+
         IsObjectiveOnSight();
         switch (m_enemyState)
         {
@@ -70,6 +84,65 @@ public class Enemy_FSM : MonoBehaviour
                 break;
         }
         
+    }
+
+    /// <summary>Accepts only complete paths; a failed request leaves the current AI behavior intact.</summary>
+    public bool TryReturnToGrave(Vector3 destination)
+    {
+        if (!isActiveAndEnabled || IsReturningToGrave || m_agent == null ||
+            !m_agent.isActiveAndEnabled || !m_agent.isOnNavMesh) return false;
+
+        var path = new NavMeshPath();
+        if (!m_agent.CalculatePath(destination, path) || path.status != NavMeshPathStatus.PathComplete ||
+            !m_agent.SetPath(path)) return false;
+
+        // An attack coroutine can otherwise reactivate its hitbox or overwrite the state later.
+        StopAllCoroutines();
+        m_isAttacking = false;
+        m_isResting = false;
+        if (m_attackTrigger != null) m_attackTrigger.SetActive(false);
+        hasReachedGrave = false;
+        graveDestination = destination;
+        m_enemyState = EnemyState.RETURNING_TO_GRAVE;
+        m_agent.isStopped = false;
+        return true;
+    }
+
+    private void ReturnToGraveState()
+    {
+        if (hasReachedGrave || m_agent == null || !m_agent.isActiveAndEnabled || !m_agent.isOnNavMesh ||
+            m_agent.pathPending) return;
+
+        float arrivalDistance = Mathf.Max(m_agent.stoppingDistance, 0.1f);
+        Vector3 offset = m_agent.nextPosition - graveDestination;
+        offset.y = 0f;
+        // Unity can clear hasPath on arrival before this update observes the final distance.
+        bool arrived = m_agent.hasPath
+            ? m_agent.pathStatus == NavMeshPathStatus.PathComplete && m_agent.remainingDistance <= arrivalDistance
+            : offset.sqrMagnitude <= arrivalDistance * arrivalDistance;
+        if (arrived)
+        {
+            hasReachedGrave = true;
+            m_agent.ResetPath();
+            m_agent.isStopped = true;
+        }
+        else if (!m_agent.hasPath || m_agent.pathStatus != NavMeshPathStatus.PathComplete)
+        {
+            ResumePatrol();
+        }
+        // Stay at the grave until ResumePatrol is explicitly called.
+    }
+
+    public void ResumePatrol()
+    {
+        if (!IsReturningToGrave) return;
+        if (m_agent != null && m_agent.isActiveAndEnabled && m_agent.isOnNavMesh)
+        {
+            m_agent.ResetPath();
+            m_agent.isStopped = false;
+        }
+        m_patrolPosition = m_PatrolPositionDefault;
+        m_enemyState = EnemyState.PATROL;
     }
 
     #region StateFunctions
@@ -130,11 +203,11 @@ public class Enemy_FSM : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, m_attackRadious);
 
-        // Dibuja el radio de visión
+        // Dibuja el radio de visiï¿½n
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, m_sightRadious);
 
-        // Dibuja las líneas del ángulo de visión
+        // Dibuja las lï¿½neas del ï¿½ngulo de visiï¿½n
         Vector3 leftLimit = Quaternion.Euler(0, -m_sightAngle, 0) * transform.forward;
         Vector3 rightLimit = Quaternion.Euler(0, m_sightAngle, 0) * transform.forward;
         Gizmos.color = Color.red;
@@ -143,6 +216,12 @@ public class Enemy_FSM : MonoBehaviour
     }
 
     private void IsObjectiveOnSight(){
+
+        if (m_objective == null)
+    {
+        m_objectiveOnSight = false;
+        return;
+    }
         Collider[] p_playerOnSight = Physics.OverlapSphere(transform.position, m_sightRadious, m_playerMask);
 
         if(p_playerOnSight.Length <= 0){
@@ -158,6 +237,7 @@ public class Enemy_FSM : MonoBehaviour
             if (!Physics.Raycast(transform.position, p_directionToPlayer, p_distanceToPlayer, m_obstacleMask)){
                 //CheckForObstacles();
                 m_objectiveOnSight = true;
+                //Debug.Log("Viendo al jugador");
             }
             else{
                 m_objectiveOnSight = false;
@@ -181,6 +261,7 @@ public class Enemy_FSM : MonoBehaviour
 
     private void LastKnownLocation()
     {
+
         Vector3 p_lastKnownLocation = new Vector3(m_objective.position.x, m_objective.position.y, m_objective.position.z);
         m_patrolPosition = p_lastKnownLocation;
         m_enemyState = EnemyState.PATROL;
@@ -190,10 +271,10 @@ public class Enemy_FSM : MonoBehaviour
     {
         NavMeshPath path = new NavMeshPath();
 
-        // Calcula un camino desde la posición actual hasta el target
+        // Calcula un camino desde la posiciï¿½n actual hasta el target
         if (m_agent.CalculatePath(p_targetPosition, path))
         {
-            // Checa si la ruta está completa
+            // Checa si la ruta estï¿½ completa
             return path.status == NavMeshPathStatus.PathComplete;
         }
 

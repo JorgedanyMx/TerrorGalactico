@@ -19,10 +19,72 @@ public static class PanteonLayoutBuilder
         { EditorApplication.delayCall += ConsumeRequest; return; }
         if (EditorApplication.isPlayingOrWillChangePlaymode) return;
         File.Delete(Request);
-        try { ApplyPopulation(); }
+        try { RemoveOutsideGraves(); }
         catch (Exception e) { File.WriteAllText("Temp/PanteonLayout.result", e.ToString()); Debug.LogException(e); }
     }
 
+    [MenuItem("Tools/Panteon/Remove Graves Outside Map")]
+    public static void RemoveOutsideGraves()
+    {
+        var scene = SceneManager.GetSceneByPath(ScenePath);
+        if (!scene.isLoaded) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+        var layout = Array.Find(scene.GetRootGameObjects(), go => go.name == "Layout 150x150");
+        var zones = layout.transform.Find("Zonas 1 a 4 - tumbas permanentes");
+        EditorSceneManager.SaveScene(scene, "Temp/Panteon-before-removing-outside.unity", true);
+        int removed = 0, retained = 0;
+        foreach (Transform zone in zones)
+            for (int i = zone.childCount - 1; i >= 0; i--)
+            {
+                var tomb = zone.GetChild(i);
+                bool outside = false;
+                foreach (var renderer in tomb.GetComponentsInChildren<Renderer>(true))
+                {
+                    var bounds = renderer.bounds;
+                    if (bounds.min.x < -75f || bounds.max.x > 75f || bounds.min.z < -75f || bounds.max.z > 75f)
+                        outside = true;
+                }
+                if (outside) { UnityEngine.Object.DestroyImmediate(tomb.gameObject); removed++; }
+                else retained++;
+            }
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: removed " + removed + " graves extending outside 150x150 map; retained " + retained + "; existing spacing and other objects preserved.");
+        Debug.Log("Panteon: removed graves outside map boundary.");
+    }
+    [MenuItem("Tools/Panteon/Expand Existing Graves To 5m And 7m Gaps")]
+    public static void ExpandExistingGraves()
+    {
+        var scene = SceneManager.GetSceneByPath(ScenePath);
+        if (!scene.isLoaded) scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+        var layout = Array.Find(scene.GetRootGameObjects(), go => go.name == "Layout 150x150");
+        var zones = layout.transform.Find("Zonas 1 a 4 - tumbas permanentes");
+        EditorSceneManager.SaveScene(scene, "Temp/Panteon-before-expanded-spacing.unity", true);
+        int count = 0;
+        foreach (Transform zone in zones)
+        {
+            if (zone.name == "Zona 1.B") continue;
+            if (!zone.name.StartsWith("Zona ") || !zone.name.EndsWith(" - densidad gradual")) continue;
+            foreach (Transform tomb in zone)
+            {
+                var parts = tomb.name.Split(' ');
+                var indices = parts[parts.Length - 1].Split('-');
+                if (indices.Length != 2 || !int.TryParse(indices[0], out int row) || !int.TryParse(indices[1], out int column))
+                    throw new InvalidOperationException("Cannot identify grave grid position: " + tomb.name);
+                row--; column--;
+                var position = tomb.position;
+                position.x = Mathf.Sign(position.x) * (9.5f + column * 7f + (row % 2) * .3f);
+                position.z = Mathf.Sign(position.z) * (10f + row * 9f);
+                tomb.position = position;
+                count++;
+            }
+        }
+        Physics.SyncTransforms();
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Capture(scene, new Vector3(0,190,0), Quaternion.Euler(90,0,0), "Temp/Panteon-expanded-spacing.png", 115);
+        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: repositioned all " + count + " existing graves in zones 1-4 to 7m column pitch/9m row pitch (5m/7m clear gaps). No graves created or removed; B and other objects preserved; overflow/overlap permitted by user.");
+        Debug.Log("Panteon: expanded all existing graves without reducing population.");
+    }
     [MenuItem("Tools/Panteon/Apply Sketch Layout 150x150")]
     public static void Build()
     {
@@ -112,9 +174,9 @@ public static class PanteonLayoutBuilder
         var layout = Array.Find(scene.GetRootGameObjects(), go => go.name == "Layout 150x150");
         if (layout == null) throw new InvalidOperationException("Build the 150x150 layout first.");
         EditorSceneManager.SaveScene(scene, "Temp/Panteon-before-population.unity", true);
-        Populate(layout.transform);
+        Populate(layout.transform, false);
         Physics.SyncTransforms();
-        ValidatePopulation(layout.transform);
+        ValidatePopulation(layout.transform, false);
         AssetDatabase.SaveAssets();
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
@@ -122,32 +184,35 @@ public static class PanteonLayoutBuilder
         Capture(scene, new Vector3(110, 125, -150), Quaternion.LookRotation(new Vector3(-110, -125, 150)), "Temp/Panteon-layout-perspective.png");
         Capture(scene, new Vector3(0, 8, -82), Quaternion.LookRotation(new Vector3(0, -5, 14)), "Temp/Panteon-entrance-jump.png", 13);
         Capture(scene, new Vector3(-25, 10, -30), Quaternion.LookRotation(new Vector3(-12, -6, 18)), "Temp/Panteon-zone-detail.png", 15);
-        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: four permanent grave zones, dense near center/paths and progressively sparse toward empty corners; 2 entrance tombs (0.6/0.7m high), colliders verified; 150x150 ground and central paths preserved.");
+        File.WriteAllText("Temp/PanteonLayout.result", "SUCCESS: grave clearances set to 3m between columns and 4m between rows; Zona 1.B preserved; graduated density retained; existing entrance, player capsule and other scene objects preserved.");
         Debug.Log("Panteon: verified graduated permanent grave population and two jump tutorial tombs.");
     }
-    static void Populate(Transform layout)
+    static void Populate(Transform layout, bool rebuildTutorial = true)
     {
+        var cornerFill = layout.Find("Zonas 1 a 4 - tumbas permanentes/Zona 1.B");
+        if (cornerFill != null) cornerFill.SetParent(layout, true);
         for (int i = layout.childCount - 1; i >= 0; i--)
         {
             var child = layout.GetChild(i);
-            if (child.name.StartsWith("Tumbas virreinales") || child.name == "Zonas 1 a 4 - tumbas permanentes" || child.name == "Entrada - aprender a saltar")
+            if (child.name.StartsWith("Tumbas virreinales") || child.name == "Zonas 1 a 4 - tumbas permanentes" || (rebuildTutorial && child.name == "Entrada - aprender a saltar"))
                 UnityEngine.Object.DestroyImmediate(child.gameObject);
         }
         var zones = new GameObject("Zonas 1 a 4 - tumbas permanentes");
         zones.transform.SetParent(layout, false);
+        if (cornerFill != null) cornerFill.SetParent(zones.transform, true);
         int zoneNumber = 0;
         // Number clockwise from the upper left, matching the sketch's top-down orientation.
         foreach (var signs in new[] { new Vector2(-1, 1), new Vector2(1, 1), new Vector2(1, -1), new Vector2(-1, -1) })
         {
             var zone = new GameObject("Zona " + (++zoneNumber) + " - densidad gradual");
             zone.transform.SetParent(zones.transform, false);
-            for (int row = 0; row < 18; row++)
-                for (int column = 0; column < 20; column++)
+            for (int row = 0; row < 13; row++)
+                for (int column = 0; column < 15; column++)
                 {
                     if (!KeepGrave(row, column)) continue;
-                    // Stable placement: dense near the crossing, fading into open outer corners.
-                    float x = signs.x * (9.5f + column * 3.15f + (row % 2) * .3f);
-                    float z = signs.y * (10f + row * 3.5f);
+                    // 2m footprints plus 3m column clearance and 4m row clearance.
+                    float x = signs.x * (9.5f + column * 5f + (row % 2) * .3f);
+                    float z = signs.y * (10f + row * 6f);
                     var grave = Instance((row + column + zoneNumber) % 3 == 0 ? "pf_GraveVirreinalNiche" : "pf_GraveVirreinalCross",
                         new Vector3(x, 0, z), zone.transform);
                     grave.name = "Tumba fija " + (row + 1).ToString("00") + "-" + (column + 1).ToString("00");
@@ -156,6 +221,7 @@ public static class PanteonLayoutBuilder
                     if (lifecycle != null) UnityEngine.Object.DestroyImmediate(lifecycle);
                 }
         }
+        if (!rebuildTutorial) return;
         var tutorial = new GameObject("Entrada - aprender a saltar");
         tutorial.transform.SetParent(layout, false);
         for (int i = 0; i < 2; i++)
@@ -177,8 +243,9 @@ public static class PanteonLayoutBuilder
     }
     static bool KeepGrave(int row, int column)
     {
-        float x = 9.5f + column * 3.15f + (row % 2) * .3f;
-        float z = 10f + row * 3.5f;
+        float x = 9.5f + column * 5f + (row % 2) * .3f;
+        float z = 10f + row * 6f;
+        if (x > 72f || z > 72f) return false;
         float distance = Mathf.Sqrt(x * x + z * z);
         // Full density in the inner 30m; smooth falloff to no graves beyond 75m.
         float t = Mathf.Clamp01((distance - 30f) / 45f);
@@ -190,18 +257,19 @@ public static class PanteonLayoutBuilder
     static int ExpectedGravesPerZone()
     {
         int count = 0;
-        for (int row = 0; row < 18; row++)
-            for (int column = 0; column < 20; column++)
+        for (int row = 0; row < 13; row++)
+            for (int column = 0; column < 15; column++)
                 if (KeepGrave(row, column)) count++;
         return count;
     }
-    static void ValidatePopulation(Transform layout)
+    static void ValidatePopulation(Transform layout, bool validateTutorial = true)
     {
         var zones = layout.Find("Zonas 1 a 4 - tumbas permanentes");
-        if (zones == null || zones.childCount != 4) throw new InvalidOperationException("Expected four populated zones.");
+        if (zones == null || zones.childCount - (zones.Find("Zona 1.B") != null ? 1 : 0) != 4) throw new InvalidOperationException("Expected four populated zones.");
         int count = 0;
         foreach (Transform zone in zones)
         {
+            if (zone.name == "Zona 1.B") continue;
             if (zone.childCount != ExpectedGravesPerZone()) throw new InvalidOperationException("Incorrect grave count in " + zone.name);
             foreach (Transform tomb in zone)
             {
@@ -217,6 +285,8 @@ public static class PanteonLayoutBuilder
                 }
             }
         }
+        if (count != 4 * ExpectedGravesPerZone()) throw new InvalidOperationException("Incorrect population.");
+        if (!validateTutorial) return;
         var tutorial = layout.Find("Entrada - aprender a saltar");
         if (count != 4 * ExpectedGravesPerZone() || tutorial.childCount != 2) throw new InvalidOperationException("Incorrect population.");
         foreach (Transform tomb in tutorial)

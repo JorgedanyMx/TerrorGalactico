@@ -1,13 +1,15 @@
 using UnityEngine;
 
-public class Practice_Basic_Enemy : Enemy_FSM
+public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
 {
-    private Animator m_animator;
+    public Animator m_animator;
     private bool frozen;
+    public float Health = 100f;
     void Start()
     {
-        m_animator = GetComponent<Animator>();
-        
+        //m_animator = GetComponent<Animator>();
+        GameObject jugadorObj = GameObject.FindWithTag("Player");
+        SetTarget(jugadorObj.transform);
     }
 
     private void OnEnable()
@@ -41,6 +43,7 @@ public class Practice_Basic_Enemy : Enemy_FSM
         switch(m_enemyState)
         {
             case EnemyState.PATROL:
+            case EnemyState.RETURNING_TO_GRAVE:
                 m_animator.SetFloat("Speed", p_speed, 0.1f, Time.deltaTime);
                 m_animator.SetBool("IsAttacking", false);
                 break;
@@ -51,9 +54,18 @@ public class Practice_Basic_Enemy : Enemy_FSM
             case EnemyState.ATTACK:
                 //animator.SetBool("Walking", false);
                 //m_animator.SetTrigger("Attacking");
-                m_animator.SetBool("IsAttacking", true);
+                //m_animator.SetBool("IsAttacking", true);
+                m_animator.SetTrigger("Attack");
                 break;
 
+        }
+    }
+    public void TakeDamage(float damage)
+    {
+        Health = Mathf.Max(Health - damage, 0f);
+        if (Health <= 0f)
+        {
+            Destroy(gameObject);
         }
     }
 }
