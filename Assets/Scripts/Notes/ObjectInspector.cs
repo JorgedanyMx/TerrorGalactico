@@ -17,6 +17,7 @@ public class ObjectInspector : MonoBehaviour
     public GameObject ActivableElements;
     [Tooltip("Velocidad de rotación del objeto al inspeccionarlo.")]
     public float rotationSpeed = 0.5f;
+    [SerializeField, Min(0.1f)] private float noteInspectionScale = 1.6f;
 
     [Header("Referencias de Input")]
     [Tooltip("Asigna aquí la acción Inspection/Inspect.")]
@@ -36,6 +37,9 @@ public class ObjectInspector : MonoBehaviour
     private GameObject currentInspectedObject;
     private Transform cameraTransform;
     private DepthOfField depthOfField;
+    private bool pausedForNote;
+    private static int notePauseCount;
+    private static float timeScaleBeforeNotes;
     private void Awake()
     {
         cameraTransform = Camera.main.transform;
@@ -65,7 +69,7 @@ public class ObjectInspector : MonoBehaviour
         {
             exitAction.action.performed -= OnExitPerformed;
         }
-        DisableInspectionInput();
+        EndInspection();
     }
 
     /// <summary>
@@ -73,35 +77,55 @@ public class ObjectInspector : MonoBehaviour
     /// </summary>
     public void StartGeneralInspection(GameObject objectToInspect)
     {
+        if (objectToInspect == null || currentInspectedObject != null) return;
+
+        // Keep the note in front of the camera as the player looks around.
+        currentInspectedObject = Instantiate(objectToInspect, cameraTransform);
+        currentInspectedObject.transform.localPosition = Vector3.forward * spawnDistance;
+        currentInspectedObject.transform.localRotation = Quaternion.identity;
+        if (currentInspectedObject.GetComponent<Notes>() != null)
+            currentInspectedObject.transform.localScale *= noteInspectionScale;
         ActivableElements.SetActive(true);
-        if (currentInspectedObject != null) return;
-
-        // Calcular la posición centrada frente a la cámara
-        Vector3 spawnPosition = cameraTransform.position + (cameraTransform.forward * spawnDistance);
-
-        // Spawnear el objeto
-        currentInspectedObject = Instantiate(objectToInspect, spawnPosition, Quaternion.identity);
 
         // Activar el Action Map
         EnableInspectionInput();
 
         // 🌟 ACTIVAR DESENFOQUE (Transición suave)
         TransitionBlur();
-        IsNote(objectToInspect);
+        IsNote(currentInspectedObject);
+    }
+
+    /// <summary>Opens the note visual with the text carried by a world pickup.</summary>
+    public bool TryStartNoteInspection(GameObject notePrefab, string noteName, string noteContent)
+    {
+        if (notePrefab == null || currentInspectedObject != null) return false;
+        StartGeneralInspection(notePrefab);
+        Notes note = currentInspectedObject.GetComponent<Notes>();
+        if (note == null)
+        {
+            Debug.LogWarning("ObjectInspector: the note inspection prefab needs a Notes component.", notePrefab);
+            OnExitPerformed(default);
+            return false;
+        }
+
+        note.SetNoteText(noteName, noteContent);
+        IsNote(currentInspectedObject);
+        PauseForNote();
+        return true;
     }
     public void IsNote(GameObject gameObjectRef)
     {
         Notes tmpNote = gameObjectRef?.GetComponent<Notes>();
         if (tmpNote == null)
         {
-            textName.text = string.Empty;
-            textCont.text = string.Empty;
+            if (textName != null) textName.text = string.Empty;
+            if (textCont != null) textCont.text = string.Empty;
             return;
         }
         else
         {
-            textName.text = tmpNote.Nname;
-            textCont.text = tmpNote.NCont;
+            if (textName != null) textName.text = tmpNote.Nname;
+            if (textCont != null) textCont.text = tmpNote.NCont;
         }
     }
 
@@ -121,14 +145,32 @@ public class ObjectInspector : MonoBehaviour
 
     private void OnExitPerformed(InputAction.CallbackContext context)
     {
+        EndInspection();
+    }
+
+    private void EndInspection()
+    {
         if (currentInspectedObject != null)
         {
             Destroy(currentInspectedObject);
             currentInspectedObject = null;
-
-            DisableInspectionInput();
         }
-        ActivableElements.SetActive(false);
+        DisableInspectionInput();
+        if (ActivableElements != null) ActivableElements.SetActive(false);
+        if (!pausedForNote) return;
+
+        pausedForNote = false;
+        notePauseCount = Mathf.Max(0, notePauseCount - 1);
+        if (notePauseCount == 0) Time.timeScale = timeScaleBeforeNotes;
+    }
+
+    private void PauseForNote()
+    {
+        if (pausedForNote) return;
+        if (notePauseCount == 0) timeScaleBeforeNotes = Time.timeScale;
+        notePauseCount++;
+        pausedForNote = true;
+        Time.timeScale = 0f;
     }
 
     private void TransitionBlur()
