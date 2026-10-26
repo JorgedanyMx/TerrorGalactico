@@ -375,6 +375,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &414027538 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5865527973049079538, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
+  m_PrefabInstance: {fileID: 266748684}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0421cc2612844313b530758909606403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerOffering
 --- !u!1001 &630498641
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1041,6 +1052,38 @@ PrefabInstance:
     - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
       propertyPath: onCountChanged.m_PersistentCalls.m_Calls.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 414027538}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: AddOffering
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerOffering, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8752742884998218242, guid: 40cfc64bd7f940149bbe8287a2eb0bb2, type: 3}
+      propertyPath: onTargetReached.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
