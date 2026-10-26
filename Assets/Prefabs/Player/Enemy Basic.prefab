@@ -206,7 +206,7 @@ MonoBehaviour:
   AttackingPlayer: {fileID: 11400000, guid: 48365e99816606940a2202fa70da7836, type: 2}
   m_animator: {fileID: 996868488970977301}
   Health: 100
-  damagedAClip: {fileID: 8300000, guid: 4e2a706504e8abc4f87e71f20d07cb7a, type: 3}
+  damagedAClip: {fileID: 8300000, guid: f913b42a6e42c48448cd6eb394dfd07b, type: 3}
 --- !u!82 &3772108878208396202
 AudioSource:
   m_ObjectHideFlags: 0
@@ -218,11 +218,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: ef92a94897301624995a00a077f820a6, type: 3}
+  m_Resource: {fileID: 8300000, guid: cc5236bbbeb0a4c4a9a95bb94b7da3ae, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.441
+  m_Volume: 0.217
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
