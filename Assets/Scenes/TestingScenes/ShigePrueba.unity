@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &112097197
 Transform:
   m_ObjectHideFlags: 0
@@ -847,6 +847,10 @@ PrefabInstance:
       value: Ghost
       objectReference: {fileID: 0}
     - target: {fileID: 7255895766351528317, guid: 85af588f60fa94d4dabb3664253a11de, type: 3}
+      propertyPath: m_animator
+      value: 
+      objectReference: {fileID: 1946016001}
+    - target: {fileID: 7255895766351528317, guid: 85af588f60fa94d4dabb3664253a11de, type: 3}
       propertyPath: m_objective
       value: 
       objectReference: {fileID: 416545777}
@@ -1128,90 +1132,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f75d4ddcd3968ca4f818694e20d3da56, type: 3}
---- !u!1 &1132311329
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1132311332}
-  - component: {fileID: 1132311331}
-  - component: {fileID: 1132311330}
-  m_Layer: 0
-  m_Name: OfferingManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1132311330
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1132311329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
-  Event: {fileID: 11400000, guid: db3e134ddf0d4ba3bae8211f8af6e471, type: 2}
-  Response:
-    m_PersistentCalls:
-      m_Calls: []
-  ResponseWithTarget:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1132311331}
-        m_TargetAssemblyTypeName: EnemyGraveReturn, Assembly-CSharp
-        m_MethodName: SendEnemyToRandomGrave
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &1132311331
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1132311329}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1913ead0877041bf8cdb3b3b89128387, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyGraveReturn
-  gravePoints:
-  - {fileID: 686042411}
-  - {fileID: 1549085966}
-  - {fileID: 458674643}
-  sampleRadius: 2
-  notePickupPrefab: {fileID: 328303486457731545, guid: 49c1b85501730db41a0a7e4be0081b1e, type: 3}
-  noteInspectionPrefab: {fileID: 328303486457731545, guid: 49c1b85501730db41a0a7e4be0081b1e, type: 3}
-  inspectionUiPrefab: {fileID: 4719778395678364722, guid: 6b996b92a869dd44db470335fab0965a, type: 3}
---- !u!4 &1132311332
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1132311329}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1233430214
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,11 +1414,85 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8363938152015372065, guid: 6c89fcff16142bf4bad775b96dbda009, type: 3}
   m_PrefabInstance: {fileID: 719009083}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &1946016001 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1450186272691428000, guid: 85af588f60fa94d4dabb3664253a11de, type: 3}
+  m_PrefabInstance: {fileID: 687157243}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2043568561 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1509207588763070744, guid: 6c89fcff16142bf4bad775b96dbda009, type: 3}
   m_PrefabInstance: {fileID: 719009083}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &49932404364266007
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3209029911199550791, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5704543350994976828, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: 'gravePoints.Array.data[0]'
+      value: 
+      objectReference: {fileID: 686042411}
+    - target: {fileID: 5704543350994976828, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: 'gravePoints.Array.data[1]'
+      value: 
+      objectReference: {fileID: 1549085966}
+    - target: {fileID: 5704543350994976828, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: 'gravePoints.Array.data[2]'
+      value: 
+      objectReference: {fileID: 458674643}
+    - target: {fileID: 8444259328585113964, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
+      propertyPath: m_Name
+      value: OfferingManager
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 05804a20f9c3fd0488bcc47b440aaba1, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1514,4 +1508,4 @@ SceneRoots:
   - {fileID: 18406302}
   - {fileID: 91992325}
   - {fileID: 687157243}
-  - {fileID: 1132311332}
+  - {fileID: 49932404364266007}
