@@ -163,6 +163,10 @@ PrefabInstance:
       propertyPath: cd
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2520176183898300616, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
+      propertyPath: JumpHeight
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 3647287251111199796, guid: f95e0941c6e5dd54cadd0ed85b81ee3b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -7.448

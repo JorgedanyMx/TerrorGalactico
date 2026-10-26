@@ -185,6 +185,7 @@ GameObject:
   - component: {fileID: 2898009280517622880}
   - component: {fileID: 6439931859672240037}
   - component: {fileID: 555013764349825190}
+  - component: {fileID: 334198008818420201}
   m_Layer: 0
   m_Name: PanDeMuerto
   m_TagString: Ofrenda
@@ -249,6 +250,18 @@ MonoBehaviour:
   onCollectedWithId:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &334198008818420201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7351214091373188309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f9d495a3096ed146a02013f689ea534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_Collectable
 --- !u!1001 &7776243826441506041
 PrefabInstance:
   m_ObjectHideFlags: 0

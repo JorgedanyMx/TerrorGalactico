@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6640189917519884808}
   - component: {fileID: 765688280333488311}
   - component: {fileID: 7382843383115836614}
+  - component: {fileID: 8924423860106461239}
   m_Layer: 0
   m_Name: Calaverita
   m_TagString: Ofrenda
@@ -75,6 +76,18 @@ MonoBehaviour:
   onCollectedWithId:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8924423860106461239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203156100725228010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f9d495a3096ed146a02013f689ea534, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_Collectable
 --- !u!1 &4985980848944678013
 GameObject:
   m_ObjectHideFlags: 0

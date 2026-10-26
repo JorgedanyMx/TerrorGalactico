@@ -103,6 +103,7 @@ GameObject:
   - component: {fileID: 1486727357978512136}
   - component: {fileID: 6072754543798952616}
   - component: {fileID: 3758677430105648883}
+  - component: {fileID: 6284352432255798219}
   m_Layer: 0
   m_Name: OfferingProjectile
   m_TagString: Ofrenda
@@ -215,6 +216,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0f0d4a68f6349d2bd5d5d54e44c1756, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OfferingProjectile
+--- !u!114 &6284352432255798219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2531075512260317018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3003e12c42a336b48b543f10fdcf7e69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::p_BulletStats
+  damage: 0
+  shooter: {fileID: 7557939269951661689, guid: bb558285fb2d65340b6aa9a3c2ccc53d, type: 3}
+  bounce: 0
 --- !u!1 &3303483708636971974
 GameObject:
   m_ObjectHideFlags: 0
