@@ -102,8 +102,10 @@ using System.Runtime.InteropServices;
 
 public class p_PlayerController : MonoBehaviour
 {
+    private p_CursorHandler cursorHandler;
     private Camera cam;
     private Rigidbody rb;
+    private p_PlayerStats stats;
     private bool jumping;
     public float JumpHeight = 2f;
 
@@ -131,26 +133,14 @@ public class p_PlayerController : MonoBehaviour
         Move.performed += PlayerMove;
         Move.canceled += PlayerStoppedMoving;
         Jump.started += PlayerJump;
-        Shoot.started += PlayerShoot;
         Offer.started += PlayerOffer;
 
         rb = gameObject.GetComponent<Rigidbody>() == null ? gameObject.AddComponent<Rigidbody>() : gameObject.GetComponent<Rigidbody>();  
         // cd = gameObject.GetComponent<Collider>() == null ? gameObject.AddComponent<Collider>() : gameObject.GetComponent<Collider>();
         rb.freezeRotation = true;
         cam = Camera.main;
-    }
-
-    void OnDisable()
-    {
-        if (Move != null)
-        {
-            Move.performed -= PlayerMove;
-            Move.canceled -= PlayerStoppedMoving;
-        }
-        if (Jump != null) Jump.started -= PlayerJump;
-        if (Shoot != null) Shoot.started -= PlayerShoot;
-        if (Offer != null) Offer.started -= PlayerOffer;
-        dir = Vector3.zero;
+        cursorHandler = gameObject.GetComponentInChildren<p_CursorHandler>();
+        stats = gameObject.GetComponent<p_PlayerStats>();
     }
 
     void Start()
@@ -178,13 +168,13 @@ public class p_PlayerController : MonoBehaviour
         jumping = true;
         rb.AddForce(Vector3.up * JumpHeight, ForceMode.Impulse);
     }
-    void PlayerShoot(InputAction.CallbackContext context)
-    {
-        
-    }
     void PlayerOffer(InputAction.CallbackContext context)
     {
-        GetComponent<PlayerOffering>()?.TryThrowOffering();
+        if (stats.Collected == 3)
+        {
+            cursorHandler.ShootOffer();
+            stats.Collected = 0;
+        }
     }
     
     void FixedUpdate()
@@ -199,7 +189,7 @@ public class p_PlayerController : MonoBehaviour
         //     Debug.Log("Velocity in Y: " + rb.linearVelocity.y);
     }
 
-    void OnTriggerEnter(Collider other)
+    public void Landed()
     {
         if (jumping)
             jumping = false;
