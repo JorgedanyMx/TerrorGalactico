@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &112097197
 Transform:
   m_ObjectHideFlags: 0
@@ -1194,6 +1194,9 @@ MonoBehaviour:
   - {fileID: 1549085966}
   - {fileID: 458674643}
   sampleRadius: 2
+  notePickupPrefab: {fileID: 328303486457731545, guid: 49c1b85501730db41a0a7e4be0081b1e, type: 3}
+  noteInspectionPrefab: {fileID: 328303486457731545, guid: 49c1b85501730db41a0a7e4be0081b1e, type: 3}
+  inspectionUiPrefab: {fileID: 4719778395678364722, guid: 6b996b92a869dd44db470335fab0965a, type: 3}
 --- !u!4 &1132311332
 Transform:
   m_ObjectHideFlags: 0
