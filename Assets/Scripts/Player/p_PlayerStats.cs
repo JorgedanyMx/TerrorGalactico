@@ -15,6 +15,8 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage, p_ICan
     private AudioSource audioSource;
     public AudioClip Damageclip;
     public AudioClip TakeItem;
+    private bool playerIsDead = false;
+    public GameEvent setDead;
     public int Collected
     {
         get { return collected; }
@@ -31,8 +33,9 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage, p_ICan
 
     public void TakeDamage(float damage)
     {
+        if(playerIsDead) return;
         // Si no puede recibir daño todavía, salimos de la función
-        if (!canTakeDamage) return;
+        // countdown damaaaaaage---- if (!canTakeDamage) return;
         PlayWithRandomPitch(Damageclip);
         Health = Mathf.Max(Health - damage, 0f);
 
@@ -46,7 +49,7 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage, p_ICan
         OnHealthChanged?.Invoke(Health);
 
         // Iniciamos el periodo de invulnerabilidad / espera de medio segundo
-        StartCoroutine(DamageCooldown());
+        // countdown damaaaaaage----StartCoroutine(DamageCooldown());
     }
 
     private IEnumerator DamageCooldown()
@@ -78,9 +81,19 @@ public class p_PlayerStats : MonoBehaviour, p_ITakeDamage, p_IHealDamage, p_ICan
     }
     public void IsDead()
     {
-        final.SetActive(true);
+        playerIsDead = true;
         Debug.Log("Se murio");
+        setDead.Raise();
+        StartCoroutine(EnableDeadScreen());
+    }
+    private IEnumerator EnableDeadScreen()
+    {
+        
+        yield return new WaitForSeconds(2f);
+        final.SetActive(true);
         StartCoroutine(WaitAndReloadScene());
+
+        SceneManager.LoadScene(0);
     }
     private IEnumerator WaitAndReloadScene()
     {

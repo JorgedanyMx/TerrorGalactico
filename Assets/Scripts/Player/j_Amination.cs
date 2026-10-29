@@ -59,4 +59,13 @@ public class CambioAnimacionesRigidbody : MonoBehaviour
             }
         }
     }
+    public void IsDead()
+    {
+        animator.SetTrigger("IsDead");
+    }
+    public void ReceivingDamage()
+    {
+        animator.SetTrigger("ReceivingDamage");
+
+    }
 }

@@ -193,7 +193,7 @@ MonoBehaviour:
   m_newPatrolPointDistance: 2
   m_restTime: 1
   m_attackTime: 1
-  m_WaitAttackTime: 0
+  m_WaitAttackTime: 1
   m_playerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -203,7 +203,9 @@ MonoBehaviour:
   m_AIGroundMask:
     serializedVersion: 2
     m_Bits: 4294967295
+  countdownAttack: 2
   AttackingPlayer: {fileID: 11400000, guid: 48365e99816606940a2202fa70da7836, type: 2}
+  triggerAttackAnim: 0
   m_animator: {fileID: 996868488970977301}
   Health: 100
   damagedAClip: {fileID: 8300000, guid: f913b42a6e42c48448cd6eb394dfd07b, type: 3}
@@ -218,11 +220,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: cc5236bbbeb0a4c4a9a95bb94b7da3ae, type: 3}
+  m_Resource: {fileID: 8300000, guid: ef92a94897301624995a00a077f820a6, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.217
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

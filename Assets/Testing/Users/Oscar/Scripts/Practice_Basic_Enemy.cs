@@ -28,6 +28,7 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
     {
         EnemyFSM_Update();
         AnimationManager();
+        isAttacking();
     }
 
     public override void AlteredState()
@@ -58,9 +59,11 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
                 //animator.SetBool("Walking", false);
                 //m_animator.SetTrigger("Attacking");
                 //m_animator.SetBool("IsAttacking", true);
-                m_animator.SetTrigger("Attack");
                 break;
-
+            case EnemyState.HIT:
+                Debug.Log("Ataca");
+                m_enemyState = EnemyState.ATTACK;
+                break;
         }
     }
     public void TakeDamage(float damage)
@@ -75,7 +78,14 @@ public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
     public void PlayWithRandomPitch(AudioClip audio)
     {
         if (m_audioSource == null) m_audioSource = GetComponent<AudioSource>();
-        m_audioSource.pitch = Random.Range(0.9f, 1.1f);
+        m_audioSource.pitch = Random.Range(0.8f, 1.2f);
         m_audioSource.PlayOneShot(audio);
     }
+    public void isAttacking()
+    {
+        if (triggerAttackAnim)
+            m_animator.SetTrigger("Attack");
+        triggerAttackAnim = false;
+    }
+
 }

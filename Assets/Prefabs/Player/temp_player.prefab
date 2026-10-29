@@ -368,7 +368,6 @@ MonoBehaviour:
   offerPrefab: {fileID: 6754912272156815745, guid: 88aa904ea7e1f15458e0a3b4062bed21, type: 3}
   offerDamage: 0
   offerBounce: 0
-  ShootSFX: {fileID: 8300000, guid: 6f033404b55a4421888a740c9894d15b, type: 3}
 --- !u!114 &5982634741264865459
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -383,6 +382,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::p_ShootLogic
   bulletSpeed: 15
   bulletLifetime: 4
+  shootDelay: 0.2
+  ShootSFX: {fileID: 0}
+  OfferSFX: {fileID: 0}
+  OfferLaunched: {fileID: 0}
 --- !u!82 &5417998349890247411
 AudioSource:
   m_ObjectHideFlags: 0
@@ -794,6 +797,7 @@ MonoBehaviour:
   final: {fileID: 0}
   Damageclip: {fileID: 8300000, guid: eecf86d8659cb0a40884345252b44657, type: 3}
   TakeItem: {fileID: 8300000, guid: a5431a90e6d3b2b48b46b300d4b9c7ea, type: 3}
+  setDead: {fileID: 11400000, guid: 363b28f70ca1a9348b334a06ce42923a, type: 2}
 --- !u!114 &881349867460682136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1137,8 +1141,92 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4381815135563646236, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5516869959069732831}
+    - targetCorrespondingSourceObject: {fileID: 4381815135563646236, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8454087189125984030}
   m_SourcePrefab: {fileID: 100100000, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}
+--- !u!114 &3038321962731800235 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5079803791645750491, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}
+  m_PrefabInstance: {fileID: 7806250086947598960}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5807966481260754796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2d7536e3358dd43b441dd8102b6da8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::j_Amination
+--- !u!1 &5807966481260754796 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4381815135563646236, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}
+  m_PrefabInstance: {fileID: 7806250086947598960}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5516869959069732831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5807966481260754796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
+  Event: {fileID: 11400000, guid: 363b28f70ca1a9348b334a06ce42923a, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3038321962731800235}
+        m_TargetAssemblyTypeName: CambioAnimacionesRigidbody, Assembly-CSharp
+        m_MethodName: IsDead
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ResponseWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &8454087189125984030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5807966481260754796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7cb570128504e0149a39146b1e5715d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEventListener
+  Event: {fileID: 11400000, guid: 48365e99816606940a2202fa70da7836, type: 2}
+  Response:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3038321962731800235}
+        m_TargetAssemblyTypeName: CambioAnimacionesRigidbody, Assembly-CSharp
+        m_MethodName: ReceivingDamage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  ResponseWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!4 &7979705024386046494 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 209633336760576110, guid: 6aa468eb788abaa4781fcf43f10faf7d, type: 3}

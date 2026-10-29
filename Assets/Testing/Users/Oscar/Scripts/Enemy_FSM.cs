@@ -12,6 +12,7 @@ public class Enemy_FSM : MonoBehaviour
         CHASE,
         ALTARED,
         ATTACK,
+        HIT,
         RETURNING_TO_GRAVE
     }
 
@@ -39,7 +40,9 @@ public class Enemy_FSM : MonoBehaviour
     [SerializeField] private LayerMask m_playerMask;
     [SerializeField] private LayerMask m_obstacleMask;
     [SerializeField] private LayerMask m_AIGroundMask;
+    [SerializeField] float countdownAttack =1f;
     public GameEvent AttackingPlayer;
+    public bool triggerAttackAnim =false ;
     
 
     public bool IsReturningToGrave => m_enemyState == EnemyState.RETURNING_TO_GRAVE;
@@ -284,20 +287,35 @@ public class Enemy_FSM : MonoBehaviour
 
     IEnumerator AttackPlayer(float p_distanceToPlayer)
     {
-
         m_agent.SetDestination(transform.position);
         m_isAttacking = true;
+
+        // Se lanza el evento 1 sola vez al iniciar el ataque
         AttackingPlayer.Raise();
+        triggerAttackAnim = true;
+
+        // Espera antes de activar el collider de ataque
         yield return new WaitForSeconds(m_WaitAttackTime);
+
+        // Activa el trigger un breve momento para registrar el golpe
         m_attackTrigger.SetActive(true);
         yield return new WaitForSeconds(m_attackTime - m_WaitAttackTime);
         m_attackTrigger.SetActive(false);
+
+        // Cooldown para evitar ataques continuos
+        yield return new WaitForSeconds(countdownAttack);
+
         m_isAttacking = false;
+
+        // Decide el siguiente estado dependiendo de la distancia del jugador
         if (p_distanceToPlayer > m_attackRadious)
         {
             m_enemyState = EnemyState.PATROL;
         }
-        
+        else
+        {
+            m_enemyState = EnemyState.CHASE;
+        }
     }
 
     IEnumerator PlayerRest()

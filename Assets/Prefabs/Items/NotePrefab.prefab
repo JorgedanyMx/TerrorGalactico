@@ -151,6 +151,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3752499355924428428}
   - component: {fileID: 3407993336348180675}
+  - component: {fileID: 1344501062844725274}
   m_Layer: 0
   m_Name: NotePrefab
   m_TagString: Untagged
@@ -192,6 +193,20 @@ MonoBehaviour:
   NameNoteRef: {fileID: 0}
   ContentNoteRef: {fileID: 0}
   noteInspectionScale: 1.6
+--- !u!114 &1344501062844725274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 328303486457731545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 061b6d18c3f18da45b1b34de0190ca84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotateItem
+  velocidad: 20
+  EnableRotation: 1
 --- !u!1 &1142541009838148143
 GameObject:
   m_ObjectHideFlags: 0
@@ -366,7 +381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.58700013}
   m_SizeDelta: {x: 70, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1518169893662239527
@@ -458,7 +473,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2d996cf05d7cad849909d9e1fe94df05, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.587
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2d996cf05d7cad849909d9e1fe94df05, type: 3}
       propertyPath: m_LocalPosition.z

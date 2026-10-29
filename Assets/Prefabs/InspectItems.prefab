@@ -243,7 +243,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 41.9
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -426,6 +426,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  ResponseWithTarget:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &6718926077318234409
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,6 +444,7 @@ MonoBehaviour:
   spawnDistance: 1
   ActivableElements: {fileID: 5610533327534379383}
   rotationSpeed: 0.5
+  noteInspectionScale: 1.6
   inspectAction: {fileID: 6516050151790119918, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   exitAction: {fileID: -8331650763076737402, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   postProcessVolume: {fileID: 4913889416535256729}
@@ -617,7 +621,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 39.25
+  m_fontSize: 19.6
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -760,7 +764,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Este es un mensaje generico porque me da hueva buscar lorem Insump
+  m_text: Este es un mensaje generico para mostrar como el inspector mostraria el
+    texto de las notas
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -787,7 +792,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 54.65
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
