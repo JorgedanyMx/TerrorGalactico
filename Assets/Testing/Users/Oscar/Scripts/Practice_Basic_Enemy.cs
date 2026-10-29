@@ -1,19 +1,18 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
-public class Practice_Basic_Enemy : Enemy_FSM
+public class Practice_Basic_Enemy : Enemy_FSM, p_ITakeDamage
 {
-    private Animator m_animator;
+    public Animator m_animator;
     private bool frozen;
-    
+    public float Health = 100f;
+    public AudioClip damagedAClip;
+    private AudioSource m_audioSource;
     void Start()
     {
-        m_animator = GetComponent<Animator>();
-        if(m_objective == null)
-        {
-            GameObject jugadorObj = GameObject.FindWithTag("Player");
-            SetTarget(jugadorObj.transform);
-
-        }
+        //m_animator = GetComponent<Animator>();
+        GameObject jugadorObj = GameObject.FindWithTag("Player");
+        SetTarget(jugadorObj.transform);
     }
 
     private void OnEnable()
@@ -47,6 +46,7 @@ public class Practice_Basic_Enemy : Enemy_FSM
         switch(m_enemyState)
         {
             case EnemyState.PATROL:
+            case EnemyState.RETURNING_TO_GRAVE:
                 m_animator.SetFloat("Speed", p_speed, 0.1f, Time.deltaTime);
                 m_animator.SetBool("IsAttacking", false);
                 break;
@@ -57,9 +57,25 @@ public class Practice_Basic_Enemy : Enemy_FSM
             case EnemyState.ATTACK:
                 //animator.SetBool("Walking", false);
                 //m_animator.SetTrigger("Attacking");
-                m_animator.SetBool("IsAttacking", true);
+                //m_animator.SetBool("IsAttacking", true);
+                m_animator.SetTrigger("Attack");
                 break;
 
         }
+    }
+    public void TakeDamage(float damage)
+    {
+        PlayWithRandomPitch(damagedAClip);
+        Health = Mathf.Max(Health - damage, 0f);
+        if (Health <= 0f)
+        {
+            Destroy(gameObject);
+        }
+    }
+    public void PlayWithRandomPitch(AudioClip audio)
+    {
+        if (m_audioSource == null) m_audioSource = GetComponent<AudioSource>();
+        m_audioSource.pitch = Random.Range(0.9f, 1.1f);
+        m_audioSource.PlayOneShot(audio);
     }
 }

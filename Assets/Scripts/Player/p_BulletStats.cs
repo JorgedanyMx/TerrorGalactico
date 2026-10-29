@@ -14,6 +14,7 @@ public class p_BulletStats : MonoBehaviour
         if (other.TryGetComponent(out p_ITakeDamage damageable))
         {
             damageable.TakeDamage(damage);
+            //Debug.Log($"Bala hizo {damage} de daño a {other.name}");
             Destroy(gameObject);
         }
         else

@@ -6,8 +6,12 @@ public sealed class MainMenu : MonoBehaviour
 {
     [SerializeField] private GameObject mainPanel;
     [SerializeField] private GameObject creditsPanel;
+    [SerializeField] private string creditsScene = "Credits";
 
     private void Awake() => ReturnToMenu();
+
+    /// <summary>Opens the credits scene (it must be in the Build Settings).</summary>
+    public void LoadCredits() => SceneManager.LoadScene(creditsScene);
 
     public void StartGame()
     {

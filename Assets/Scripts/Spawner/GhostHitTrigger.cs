@@ -11,13 +11,22 @@ public class GhostHitTrigger : MonoBehaviour
     [SerializeField] private string ghostTag = "Ghost";
     [SerializeField] private bool destroyOnHit = true;
     [SerializeField] private UnityEvent<GameObject> onGhostHit;
+    private bool consumed;
 
     private void OnCollisionEnter(Collision collision) => TryHit(collision.gameObject);
     private void OnTriggerEnter(Collider other) => TryHit(other.gameObject);
 
     private void TryHit(GameObject other)
     {
-        if (other.tag != ghostTag) return;
+        if (consumed) return;
+
+        Transform ghost = other.transform;
+        while (ghost != null && ghost.tag != ghostTag) ghost = ghost.parent;
+        if (ghost == null) return;
+
+        // Destroy is deferred: multiple colliders must not deliver the same offering twice.
+        consumed = destroyOnHit;
+        other = ghost.gameObject;
 
         OnGhostHit(other);
         onGhostHit?.Invoke(other);

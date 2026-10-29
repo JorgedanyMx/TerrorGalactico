@@ -10,9 +10,19 @@ public class p_CursorHandler : MonoBehaviour
     [SerializeField] private GameObject player;
     [SerializeField] private GameObject bulletPrefab;
 
+    [Header("Look At Cursor")]
+    [SerializeField] private Transform lookObject;   // the object that turns toward the cursor
+    [SerializeField] private float turnSpeed = 0f;   // 0 = snap instantly, higher = smoother
+
+    [Header("Offer")]
+    [SerializeField] private GameObject offerPrefab;
+    public float offerDamage = 0f;
+    public int offerBounce = 0;
+
     private p_PlayerStats stats;
     private InputAction cursorAction;
     private InputAction cursorClickAction;
+
 
     void OnEnable()
     {
@@ -38,6 +48,20 @@ public class p_CursorHandler : MonoBehaviour
         cursorClickAction.Disable();
     }
 
+    void LateUpdate()
+    {
+        if (lookObject == null) return;
+
+        Vector3 dir = GetAimDirection();
+        if (dir == Vector3.zero) return;
+
+        Quaternion target = Quaternion.LookRotation(dir, Vector3.up);
+
+        lookObject.rotation = turnSpeed <= 0f
+            ? target
+            : Quaternion.Slerp(lookObject.rotation, target, turnSpeed * Time.deltaTime);
+    }
+
     void OnCursorMove(InputAction.CallbackContext context)
     {
         Vector2 delta = context.ReadValue<Vector2>() * Time.deltaTime;
@@ -47,11 +71,30 @@ public class p_CursorHandler : MonoBehaviour
 
     void OnCursorClick(InputAction.CallbackContext context)
     {
+        Fire(bulletPrefab, stats.PlayerDamage, 0,false);
+    }
 
-        Vector3 direction = new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.z).normalized;
+    // Called by p_PlayerController.PlayerOffer
+    public void ShootOffer()
+    {
+        if (offerPrefab == null)
+        {
+            Debug.LogWarning("p_CursorHandler: offerPrefab is not assigned.");
+            return;
+        }
+        Fire(offerPrefab, offerDamage, offerBounce,true);
+    }
 
+    // Single source of truth for aiming, used by both shooting and looking
+    private Vector3 GetAimDirection()
+    {
+        return new Vector3(cursorObject.localPosition.x, 0, cursorObject.localPosition.z).normalized;
+    }
+
+    private void Fire(GameObject prefab, float damage, int bounce, bool isOffer)
+    {
+        Vector3 direction = GetAimDirection();
         shootLogic.Shoot(player.transform.position, player.transform.position + direction,
-                         stats.PlayerDamage, bulletPrefab, player);
-        Debug.Log($"cursor local: {cursorObject.localPosition}  dir: {direction}");
+                         damage, prefab, player, bounce, isOffer);
     }
 }
