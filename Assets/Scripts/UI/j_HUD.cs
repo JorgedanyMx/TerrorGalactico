@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class j_HUD : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class j_HUD : MonoBehaviour
     [Header("Configuración")]
     [Tooltip("Duración de la animación completa (subir y bajar el alpha) en segundos.")]
     [SerializeField] private float duracionAnimacion = 0.5f;
+    [SerializeField] private int notetaken = 0;
+    public TMP_Text NoteCounter;
 
     private Coroutine rutinaActual;
 
@@ -98,4 +102,22 @@ public class j_HUD : MonoBehaviour
 
         rutinaActual = null;
     }
-}
+
+    public void UpdateNotesHUD()
+    {
+        notetaken++;
+        NoteCounter.text = "Notes: " + notetaken +"/15";
+
+        if (notetaken >= 15)
+        {
+            NoteCounter.text = "Nuestra historia será conservada";
+            StartCoroutine(FinishGame(5f));
+        }
+    }
+    IEnumerator FinishGame(float delayTime)
+        {
+
+            yield return new WaitForSeconds(delayTime);
+        SceneManager.LoadScene(0);
+        }
+    }

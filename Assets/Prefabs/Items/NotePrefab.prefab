@@ -193,6 +193,7 @@ MonoBehaviour:
   NameNoteRef: {fileID: 0}
   ContentNoteRef: {fileID: 0}
   noteInspectionScale: 1.6
+  NoteCollected: {fileID: 11400000, guid: ea07e0dff7d1fbc48867250d8327fa62, type: 2}
 --- !u!114 &1344501062844725274
 MonoBehaviour:
   m_ObjectHideFlags: 0

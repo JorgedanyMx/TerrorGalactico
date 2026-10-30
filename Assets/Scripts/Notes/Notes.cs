@@ -16,6 +16,7 @@ public class Notes : MonoBehaviour
     private bool pickupEnabled;
     private bool collected;
     [SerializeField, Min(0.1f)] private float noteInspectionScale = 1.6f;
+    public GameEvent NoteCollected;
     private void Awake()
     {
         // Existing note prefabs can leave these references empty.
@@ -81,6 +82,7 @@ public class Notes : MonoBehaviour
 
         if (!inspector.TryStartNoteInspection(inspectionPrefab, Nname, NCont)) return;
         collected = true;
+        NoteCollected.Raise();
         Destroy(gameObject);
     }
 }
